@@ -1,0 +1,9 @@
+<Window x:Class="Workbench.KeyDisplayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ShowInTaskbar="False" ShowActivated="False" Topmost="True" SizeToContent="WidthAndHeight">
+    <Border Background="#DC202124" CornerRadius="12" Padding="22,13" MinWidth="90">
+        <TextBlock x:Name="KeyText" Foreground="White" FontSize="22" FontWeight="SemiBold" TextAlignment="Center"/>
+    </Border>
+</Window>

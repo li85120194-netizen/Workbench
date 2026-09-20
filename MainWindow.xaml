@@ -1,0 +1,67 @@
+<Window x:Class="Workbench.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="工作台" Width="980" Height="680" MinWidth="900" MinHeight="620"
+ WindowStartupLocation="CenterScreen" Background="#F4F6FA" Closing="Window_Closing" SourceInitialized="Window_SourceInitialized">
+ <Window.Resources>
+  <Style x:Key="NavButton" TargetType="Button"><Setter Property="Height" Value="52"/><Setter Property="Margin" Value="12,4"/><Setter Property="Padding" Value="18,0"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#DDE4F0"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/></Style>
+  <Style x:Key="ActionButton" TargetType="Button"><Setter Property="Height" Value="42"/><Setter Property="MinWidth" Value="128"/><Setter Property="Margin" Value="4"/><Setter Property="Padding" Value="16,0"/><Setter Property="FontSize" Value="14"/><Setter Property="Cursor" Value="Hand"/></Style>
+  <Style TargetType="ComboBox"><Setter Property="Height" Value="34"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="FontSize" Value="14"/></Style>
+ </Window.Resources>
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="205"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border Background="#182033">
+   <Grid Margin="0,20,0,16"><Grid.RowDefinitions><RowDefinition Height="86"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel HorizontalAlignment="Center"><TextBlock Text="∞" FontSize="44" Foreground="#66D9FF" HorizontalAlignment="Center"/><TextBlock Text="工作台" FontSize="19" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,-8,0,0"/></StackPanel>
+    <StackPanel Grid.Row="1">
+     <Button x:Name="MouseNav" Content="◉  鼠标高亮" Style="{StaticResource NavButton}" Click="MouseNav_Click" Background="#2B3854"/>
+     <Button x:Name="TimerNav" Content="◷  倒计时" Style="{StaticResource NavButton}" Click="TimerNav_Click"/>
+     <Button x:Name="OrganizerNav" Content="▦  桌面收纳" Style="{StaticResource NavButton}" Click="OrganizerNav_Click"/>
+     <Button x:Name="SettingsNav" Content="⚙  设置与更新" Style="{StaticResource NavButton}" Click="SettingsNav_Click"/>
+    </StackPanel>
+    <TextBlock Grid.Row="2" Text="v1.0.0" Foreground="#8290A8" HorizontalAlignment="Center" FontSize="12"/>
+   </Grid>
+  </Border>
+  <Grid Grid.Column="1" Margin="30,24">
+   <ScrollViewer x:Name="MousePage" VerticalScrollBarVisibility="Auto"><StackPanel>
+    <TextBlock Text="鼠标高亮" FontSize="28" FontWeight="SemiBold" Foreground="#172033"/><TextBlock Text="演示时快速定位鼠标，并支持屏幕标注。" Foreground="#687386" Margin="0,4,0,18"/>
+    <Border Padding="18" CornerRadius="12" Background="White"><StackPanel>
+     <StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="10" Height="10" Fill="#9AA0A6" Margin="0,0,9,0"/><TextBlock x:Name="StatusText" Text="当前状态：未启用" FontSize="15"/></StackPanel>
+     <StackPanel Orientation="Horizontal" Margin="0,14,0,0"><Button x:Name="EnableButton" Content="启用高亮  F1" Click="EnableButton_Click" Style="{StaticResource ActionButton}" Background="#1677FF" Foreground="White"/><Button x:Name="DisableButton" Content="关闭高亮  F1" Click="DisableButton_Click" IsEnabled="False" Style="{StaticResource ActionButton}"/><Button x:Name="AnnotationButton" Content="屏幕标注  F2" Click="AnnotationButton_Click" Style="{StaticResource ActionButton}"/></StackPanel>
+    </StackPanel></Border>
+    <Border Margin="0,14,0,0" Padding="18" CornerRadius="12" Background="White"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="44"/><RowDefinition Height="44"/><RowDefinition Height="44"/><RowDefinition Height="44"/><RowDefinition Height="44"/><RowDefinition Height="44"/></Grid.RowDefinitions>
+     <TextBlock Text="主题" VerticalAlignment="Center"/><ComboBox x:Name="ThemeBox" Grid.Column="1" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="Settings_Changed"><ComboBoxItem Content="经典纯色"/><ComboBoxItem Content="聚光高亮"/><ComboBoxItem Content="霓虹效果"/></ComboBox>
+     <TextBlock Grid.Row="1" Text="形状" VerticalAlignment="Center"/><ComboBox x:Name="ShapeBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="Settings_Changed"><ComboBoxItem Content="圆环"/><ComboBoxItem Content="方框"/><ComboBoxItem Content="十字准星"/></ComboBox>
+     <TextBlock Grid.Row="2" Text="大小" VerticalAlignment="Center"/><Slider x:Name="SizeSlider" Grid.Row="2" Grid.Column="1" Minimum="24" Maximum="72" Value="32" TickFrequency="4" IsSnapToTickEnabled="True" ValueChanged="Settings_Changed"/><TextBlock x:Name="SizeText" Grid.Row="2" Grid.Column="2" Text="32 px" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+     <TextBlock Grid.Row="3" Text="位置" VerticalAlignment="Center"/><ComboBox x:Name="PositionBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="Settings_Changed"><ComboBoxItem Content="环绕鼠标"/><ComboBoxItem Content="鼠标右下方"/><ComboBoxItem Content="鼠标左上方"/></ComboBox>
+     <TextBlock Grid.Row="4" Text="颜色" VerticalAlignment="Center"/><Button x:Name="ColorButton" Grid.Row="4" Grid.Column="1" Content="选择颜色…" Click="ColorButton_Click" Height="32" HorizontalAlignment="Left" Padding="14,0"/><Border x:Name="ColorPreview" Grid.Row="4" Grid.Column="2" Width="34" Height="24" CornerRadius="4" Background="Red" HorizontalAlignment="Right"/>
+     <CheckBox x:Name="DynamicCheck" Grid.Row="5" Grid.Column="1" Content="动态呼吸效果" Checked="Settings_Changed" Unchecked="Settings_Changed"/><CheckBox x:Name="KeyboardCheck" Grid.Row="5" Grid.Column="2" Content="按键显示" Checked="KeyboardCheck_Changed" Unchecked="KeyboardCheck_Changed" HorizontalAlignment="Right"/>
+    </Grid></Border>
+   </StackPanel></ScrollViewer>
+
+   <ScrollViewer x:Name="TimerPage" Visibility="Collapsed"><StackPanel>
+    <TextBlock Text="倒计时" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="开启一个可拖动、可缩放、始终置顶的悬浮计时器。" Foreground="#687386" Margin="0,4,0,18"/>
+    <Border Padding="24" CornerRadius="12" Background="White"><StackPanel>
+     <TextBlock Text="设置时长" FontSize="18" FontWeight="SemiBold"/>
+     <StackPanel Orientation="Horizontal" Margin="0,18,0,18"><TextBox x:Name="TimerMinutes" Text="10" Width="90" Height="42" FontSize="20" TextAlignment="Center" VerticalContentAlignment="Center"/><TextBlock Text="分钟" VerticalAlignment="Center" Margin="10,0,22,0"/><TextBox x:Name="TimerSeconds" Text="0" Width="90" Height="42" FontSize="20" TextAlignment="Center" VerticalContentAlignment="Center"/><TextBlock Text="秒" VerticalAlignment="Center" Margin="10,0,0,0"/></StackPanel>
+     <StackPanel Orientation="Horizontal"><Button Content="启动倒计时" Click="StartTimer_Click" Style="{StaticResource ActionButton}" Background="#17A673" Foreground="White"/><Button Content="开始 / 暂停" Click="ToggleTimer_Click" Style="{StaticResource ActionButton}"/><Button Content="重置" Click="ResetTimer_Click" Style="{StaticResource ActionButton}"/></StackPanel>
+     <TextBlock Text="提示：悬浮计时器可拖动位置，拖拽边缘可调整大小；倒计时结束后变为红色。" Foreground="#687386" Margin="4,18,0,0" TextWrapping="Wrap"/>
+    </StackPanel></Border>
+   </StackPanel></ScrollViewer>
+
+   <ScrollViewer x:Name="OrganizerPage" Visibility="Collapsed"><StackPanel>
+    <TextBlock Text="桌面收纳" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="将桌面办公文档整理到当天日期文件夹，可随时撤回上一次操作。" Foreground="#687386" Margin="0,4,0,18"/>
+    <Border Padding="22" CornerRadius="12" Background="White"><StackPanel>
+     <TextBlock Text="安全整理" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="支持 Word、Excel、PowerPoint、PDF、TXT、CSV、WPS 等文档；不会移动文件夹、隐藏文件、程序或快捷方式。" Foreground="#687386" TextWrapping="Wrap" Margin="0,8,0,16"/>
+     <Border Background="#F4F7FB" Padding="14" CornerRadius="8"><TextBlock x:Name="OrganizerStatus" Text="正在读取桌面…" TextWrapping="Wrap"/></Border>
+     <StackPanel Orientation="Horizontal" Margin="0,16,0,0"><Button Content="预览待整理文件" Click="PreviewOrganize_Click" Style="{StaticResource ActionButton}"/><Button Content="执行收纳" Click="Organize_Click" Style="{StaticResource ActionButton}" Background="#1677FF" Foreground="White"/><Button Content="撤回上一次" Click="UndoOrganize_Click" Style="{StaticResource ActionButton}"/></StackPanel>
+     <ListBox x:Name="OrganizerPreview" Height="260" Margin="4,14,4,0"/>
+    </StackPanel></Border>
+   </StackPanel></ScrollViewer>
+
+   <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed"><StackPanel>
+    <TextBlock Text="设置与更新" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="管理版本更新和应用信息。" Foreground="#687386" Margin="0,4,0,18"/>
+    <Border Padding="22" CornerRadius="12" Background="White"><StackPanel><TextBlock Text="工作台 v1.0.0" FontSize="19" FontWeight="SemiBold"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,16,0,14"/><Button Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource ActionButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。发现新版本后下载并运行新版安装包。" Foreground="#687386" Margin="0,14,0,0"/></StackPanel></Border>
+   </StackPanel></ScrollViewer>
+  </Grid>
+ </Grid>
+</Window>
