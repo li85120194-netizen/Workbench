@@ -108,7 +108,7 @@ public partial class MainWindow : Window
         int.TryParse(TimerMinutes.Text, out int minutes); int.TryParse(TimerSeconds.Text, out int seconds);
         totalSeconds = Math.Max(0, minutes * 60 + seconds);
         if (totalSeconds > 0) return true;
-        System.Windows.MessageBox.Show("请输入大于 0 的倒计时时长。", "工作台", MessageBoxButton.OK, MessageBoxImage.Information);
+        System.Windows.MessageBox.Show("请输入大于 0 的倒计时时长。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Information);
         return false;
     }
 
@@ -131,17 +131,17 @@ public partial class MainWindow : Window
     private void Organize_Click(object sender, RoutedEventArgs e)
     {
         var files = DesktopOrganizerService.GetCandidates();
-        if (files.Count == 0) { System.Windows.MessageBox.Show("桌面没有可整理的办公文档。", "工作台"); return; }
+        if (files.Count == 0) { System.Windows.MessageBox.Show("桌面没有可整理的办公文档。", "工具箱"); return; }
         if (System.Windows.MessageBox.Show($"将把 {files.Count} 个文档移动到今天的收纳文件夹。是否继续？", "确认桌面收纳", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         var result = DesktopOrganizerService.Organize();
-        System.Windows.MessageBox.Show($"已移动 {result.Moved} 项，失败 {result.Failed} 项。", "工作台");
+        System.Windows.MessageBox.Show($"已移动 {result.Moved} 项，失败 {result.Failed} 项。", "工具箱");
         OrganizerPreview.ItemsSource = null; RefreshOrganizerStatus();
     }
 
     private void UndoOrganize_Click(object sender, RoutedEventArgs e)
     {
         var result = DesktopOrganizerService.UndoLast();
-        System.Windows.MessageBox.Show(result.Message, "工作台"); RefreshOrganizerStatus();
+        System.Windows.MessageBox.Show(result.Message, "工具箱"); RefreshOrganizerStatus();
     }
 
     private void RefreshOrganizerStatus()
@@ -157,11 +157,11 @@ public partial class MainWindow : Window
         try
         {
             var result = await UpdateService.CheckAsync();
-            if (!result.UpdateAvailable) { if (showResult) System.Windows.MessageBox.Show("当前已经是最新版本。", "工作台"); return; }
-            if (System.Windows.MessageBox.Show($"发现工作台 {result.Version}，是否下载并安装？", "发现更新", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+            if (!result.UpdateAvailable) { if (showResult) System.Windows.MessageBox.Show("当前已经是最新版本。", "工具箱"); return; }
+            if (System.Windows.MessageBox.Show($"发现工具箱 {result.Version}，是否下载并安装？", "发现更新", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                 await UpdateService.DownloadAndInstallAsync(result);
         }
-        catch (Exception ex) { if (showResult) System.Windows.MessageBox.Show($"检查更新失败：{ex.Message}", "工作台", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { if (showResult) System.Windows.MessageBox.Show($"检查更新失败：{ex.Message}", "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void SetStatus(bool enabled)

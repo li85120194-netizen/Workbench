@@ -9,10 +9,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>Workbench</AssemblyName>
     <RootNamespace>Workbench</RootNamespace>
-    <Product>工作台</Product>
-    <Company>Workbench</Company>
+    <Product>Toolbox</Product>
+    <Company>Toolbox</Company>
     <ApplicationIcon>Assets\Workbench.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
