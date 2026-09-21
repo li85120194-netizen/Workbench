@@ -40,7 +40,7 @@ internal static class WorkbenchInstaller
             TryDelete(LegacyDesktopShortcut);
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench"))
             {
-                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.0.1"); key.SetValue("Publisher", "Toolbox");
+                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.0.2"); key.SetValue("Publisher", "Toolbox");
                 key.SetValue("DisplayIcon", AppPath); key.SetValue("UninstallString", "\"" + UninstallPath + "\" /uninstall");
                 key.SetValue("InstallLocation", InstallDir); key.SetValue("NoModify", 1); key.SetValue("NoRepair", 1);
             }

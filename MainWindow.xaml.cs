@@ -16,11 +16,41 @@ public partial class MainWindow : Window
     private CountdownWindow? _countdown;
     private HwndSource? _source;
     private System.Windows.Media.Color _selectedColor = Colors.Red;
+    private System.Windows.Media.Color _timerBackgroundColor = Colors.White;
+    private Slider? _timerBackgroundOpacity;
+    private TextBlock? _timerBackgroundOpacityText;
+    private Border? _timerBackgroundPreview;
 
     public MainWindow()
     {
         InitializeComponent();
-        Loaded += (_, _) => RefreshOrganizerStatus();
+        Loaded += (_, _) => { RefreshOrganizerStatus(); SwapTimerAndMouseNavigation(); AddTimerBackgroundControls(); };
+    }
+
+    private void SwapTimerAndMouseNavigation()
+    {
+        if (MouseNav.Parent is not StackPanel panel) return;
+        panel.Children.Remove(TimerNav);
+        panel.Children.Insert(0, TimerNav);
+    }
+
+    private void AddTimerBackgroundControls()
+    {
+        var row = new StackPanel { Orientation = System.Windows.Controls.Orientation.Horizontal, Margin = new Thickness(4, 14, 0, 0) };
+        row.Children.Add(new TextBlock { Text = "背景", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) });
+        var colorButton = new System.Windows.Controls.Button { Content = "选择颜色…", Height = 32, Padding = new Thickness(14, 0, 14, 0) };
+        colorButton.Click += TimerBackgroundButton_Click;
+        row.Children.Add(colorButton);
+        _timerBackgroundPreview = new Border { Width = 34, Height = 24, CornerRadius = new CornerRadius(4), Background = System.Windows.Media.Brushes.White, BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 210, 220)), BorderThickness = new Thickness(1), Margin = new Thickness(10, 0, 22, 0), VerticalAlignment = VerticalAlignment.Center };
+        row.Children.Add(_timerBackgroundPreview);
+        row.Children.Add(new TextBlock { Text = "不透明度", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 8, 0) });
+        _timerBackgroundOpacity = new Slider { Width = 150, Minimum = 0, Maximum = 100, Value = 0 };
+        _timerBackgroundOpacity.ValueChanged += TimerBackgroundOpacity_Changed;
+        row.Children.Add(_timerBackgroundOpacity);
+        _timerBackgroundOpacityText = new TextBlock { Text = "0%", Width = 42, TextAlignment = TextAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
+        row.Children.Add(_timerBackgroundOpacityText);
+        TimerPanel.Children.Add(row);
+        TimerPanel.Children.Add(new TextBlock { Text = "默认背景完全透明。倒计时结束后继续负计时，并显示红色数字。", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(104, 115, 134)), Margin = new Thickness(4, 10, 0, 0), TextWrapping = TextWrapping.Wrap });
     }
 
     private void Window_SourceInitialized(object? sender, EventArgs e)
@@ -117,10 +147,27 @@ public partial class MainWindow : Window
         if (!TryReadTime(out int seconds)) return;
         _countdown ??= new CountdownWindow();
         _countdown.Closed += (_, _) => _countdown = null;
-        _countdown.Show(); _countdown.Activate(); _countdown.Start(seconds);
+        ApplyTimerBackground(); _countdown.Show(); _countdown.Activate(); _countdown.Start(seconds);
     }
     private void ToggleTimer_Click(object sender, RoutedEventArgs e) { _countdown ??= new CountdownWindow(); if (!_countdown.IsVisible) _countdown.Show(); _countdown.Toggle(); }
     private void ResetTimer_Click(object sender, RoutedEventArgs e) => _countdown?.Reset();
+
+    private void TimerBackgroundButton_Click(object sender, RoutedEventArgs e)
+    {
+        using var dialog = new System.Windows.Forms.ColorDialog { FullOpen = true, Color = System.Drawing.Color.FromArgb(_timerBackgroundColor.R, _timerBackgroundColor.G, _timerBackgroundColor.B) };
+        if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+        _timerBackgroundColor = System.Windows.Media.Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B);
+        if (_timerBackgroundPreview is not null) _timerBackgroundPreview.Background = new SolidColorBrush(_timerBackgroundColor);
+        ApplyTimerBackground();
+    }
+
+    private void TimerBackgroundOpacity_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (_timerBackgroundOpacityText is not null) _timerBackgroundOpacityText.Text = $"{(int)e.NewValue}%";
+        ApplyTimerBackground();
+    }
+
+    private void ApplyTimerBackground() => _countdown?.SetBackground(_timerBackgroundColor, (_timerBackgroundOpacity?.Value ?? 0) / 100.0);
 
     private void PreviewOrganize_Click(object sender, RoutedEventArgs e)
     {

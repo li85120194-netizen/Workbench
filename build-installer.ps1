@@ -4,6 +4,7 @@ $repoRoot = Split-Path -Parent $projectRoot
 $csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 
 dotnet publish "$projectRoot\Workbench.csproj" -c Release
+if ($LASTEXITCODE -ne 0) { throw 'Application publish failed.' }
 $payload = "$projectRoot\bin\Release\net6.0-windows\win-x64\publish\Workbench.exe"
 
 & $csc /nologo /target:winexe /platform:x64 /optimize+ `
@@ -11,5 +12,6 @@ $payload = "$projectRoot\bin\Release\net6.0-windows\win-x64\publish\Workbench.ex
   /resource:"$payload,WorkbenchPayload" `
   /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /reference:Microsoft.CSharp.dll `
   /out:"$repoRoot\WorkbenchSetup.exe" "$projectRoot\Installer\Installer.cs"
+if ($LASTEXITCODE -ne 0) { throw 'Installer compilation failed.' }
 
-Write-Host "安装包已生成：$repoRoot\WorkbenchSetup.exe"
+Write-Host "Installer created: $repoRoot\WorkbenchSetup.exe"

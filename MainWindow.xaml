@@ -18,7 +18,7 @@
      <Button x:Name="OrganizerNav" Content="▦  桌面收纳" Style="{StaticResource NavButton}" Click="OrganizerNav_Click"/>
      <Button x:Name="SettingsNav" Content="⚙  设置与更新" Style="{StaticResource NavButton}" Click="SettingsNav_Click"/>
     </StackPanel>
-    <TextBlock Grid.Row="2" Text="v1.0.1" Foreground="#8290A8" HorizontalAlignment="Center" FontSize="12"/>
+    <TextBlock Grid.Row="2" Text="v1.0.2" Foreground="#8290A8" HorizontalAlignment="Center" FontSize="12"/>
    </Grid>
   </Border>
   <Grid Grid.Column="1" Margin="30,24">
@@ -38,7 +38,7 @@
     </Grid></Border>
    </StackPanel></ScrollViewer>
 
-   <ScrollViewer x:Name="TimerPage" Visibility="Collapsed"><StackPanel>
+   <ScrollViewer x:Name="TimerPage" Visibility="Collapsed"><StackPanel x:Name="TimerPanel">
     <TextBlock Text="倒计时" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="开启一个可拖动、可缩放、始终置顶的悬浮计时器。" Foreground="#687386" Margin="0,4,0,18"/>
     <Border Padding="24" CornerRadius="12" Background="White"><StackPanel>
      <TextBlock Text="设置时长" FontSize="18" FontWeight="SemiBold"/>

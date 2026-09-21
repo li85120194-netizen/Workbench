@@ -11,6 +11,7 @@ public partial class CountdownWindow : Window
     private DateTime _target;
     private TimeSpan _pausedRemaining;
     private bool _running;
+    private bool _hasStarted;
 
     public CountdownWindow()
     {
@@ -19,19 +20,26 @@ public partial class CountdownWindow : Window
         SizeChanged += (_, _) => TimeText.FontSize = Math.Clamp(Math.Min(ActualWidth / 5.5, ActualHeight / 2.2), 24, 110);
     }
 
-    public void Start(int seconds) { _pausedRemaining = TimeSpan.FromSeconds(seconds); _target = DateTime.Now + _pausedRemaining; _running = true; _timer.Start(); Refresh(); }
+    public void Start(int seconds) { _pausedRemaining = TimeSpan.FromSeconds(seconds); _target = DateTime.Now + _pausedRemaining; _running = true; _hasStarted = true; _timer.Start(); Refresh(); }
     public void Toggle()
     {
         if (_running) { _pausedRemaining = _target - DateTime.Now; _running = false; _timer.Stop(); }
-        else if (_pausedRemaining.TotalSeconds > 0) { _target = DateTime.Now + _pausedRemaining; _running = true; _timer.Start(); }
+        else if (_hasStarted) { _target = DateTime.Now + _pausedRemaining; _running = true; _timer.Start(); }
     }
-    public void Reset() { _timer.Stop(); _running = false; _pausedRemaining = TimeSpan.Zero; TimeText.Text = "00:00"; TimeText.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(23, 166, 115)); }
+    public void Reset() { _timer.Stop(); _running = false; _hasStarted = false; _pausedRemaining = TimeSpan.Zero; TimeText.Text = "00:00"; TimeText.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(23, 166, 115)); }
+    public void SetBackground(System.Windows.Media.Color color, double opacity)
+    {
+        TimerBackground.Background = opacity <= 0 ? System.Windows.Media.Brushes.Transparent : new SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)Math.Round(255 * Math.Clamp(opacity, 0, 1)), color.R, color.G, color.B));
+        TimerBackground.BorderBrush = opacity <= 0 ? System.Windows.Media.Brushes.Transparent : new SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)Math.Round(60 * Math.Clamp(opacity, 0, 1)), 0, 0, 0));
+    }
     private void Refresh()
     {
         var remaining = _running ? _target - DateTime.Now : _pausedRemaining;
-        if (remaining <= TimeSpan.Zero) { remaining = TimeSpan.Zero; _running = false; _timer.Stop(); TimeText.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(231, 76, 60)); }
-        else TimeText.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(23, 166, 115));
-        TimeText.Text = remaining.TotalHours >= 1 ? $"{(int)remaining.TotalHours:00}:{remaining.Minutes:00}:{remaining.Seconds:00}" : $"{remaining.Minutes:00}:{remaining.Seconds:00}";
+        bool overtime = remaining < TimeSpan.Zero;
+        TimeText.Foreground = new SolidColorBrush(overtime ? System.Windows.Media.Color.FromRgb(231, 76, 60) : System.Windows.Media.Color.FromRgb(23, 166, 115));
+        var shown = remaining.Duration();
+        string value = shown.TotalHours >= 1 ? $"{(int)shown.TotalHours:00}:{shown.Minutes:00}:{shown.Seconds:00}" : $"{shown.Minutes:00}:{shown.Seconds:00}";
+        TimeText.Text = overtime ? $"-{value}" : value;
     }
     private void DragArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) { if (e.ClickCount == 2) Toggle(); else DragMove(); }
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
