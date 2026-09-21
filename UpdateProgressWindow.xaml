@@ -53,7 +53,7 @@
         </Border>
 
         <Grid Grid.Row="5">
-            <TextBlock Text="下载完成后会自动安装并重新打开工具箱。"
+            <TextBlock Text="随后继续显示完整安装包进度，完成后自动安装并重启。"
                        VerticalAlignment="Center" Foreground="#687386" FontSize="12"/>
             <Button x:Name="CancelButton" Content="取消更新" Width="96" Height="34"
                     HorizontalAlignment="Right" Click="CancelButton_Click"/>

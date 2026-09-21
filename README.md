@@ -1,5 +1,12 @@
 # 工具箱
 
+## v1.0.4
+
+- 新增小型更新引导程序，旧版只需先下载一个很小的 EXE，避免 69MB 完整安装包被旧版 15 秒超时中断。
+- 引导程序显示完整安装包的百分比、文件大小、速度、已用时间和预计剩余时间。
+- 完整安装包下载完成后自动安装，并重新打开工具箱。
+- Release 中 `WorkbenchSetup.exe` 为更新引导程序，`WorkbenchFullSetup.exe` 为完整离线安装包。
+
 ## v1.0.3
 
 - 修复网络稍慢时检查更新在 15 秒后失败的问题，增加超时放宽、自动重试及备用检查地址。
@@ -43,7 +50,8 @@
 
 ### 安装与更新
 
-- `WorkbenchSetup.exe` 安装到当前用户目录，无需管理员权限
+- `WorkbenchSetup.exe` 是约 76KB 的在线更新引导程序，适合自动更新和在线安装
+- `WorkbenchFullSetup.exe` 是包含完整运行环境的离线安装包，无需管理员权限
 - 自动创建桌面及开始菜单快捷方式
 - 可从 Windows“已安装的应用”中卸载
 - 启动时通过 GitHub Releases 检查新版本
@@ -64,14 +72,15 @@ dotnet publish -c Release
 bin\Release\net6.0-windows\win-x64\publish\Workbench.exe
 ```
 
-安装器源码位于 `Installer/Installer.cs`。安装器使用 Windows 自带的 .NET Framework C# 编译器构建，并将发布后的 `Workbench.exe` 嵌入为资源。
+完整安装器源码位于 `Installer/Installer.cs`，更新引导程序源码位于 `Installer/Bootstrapper.cs`。两者均使用 Windows 自带的 .NET Framework C# 编译器构建；完整安装器会将发布后的 `Workbench.exe` 嵌入为资源。
 
 ## 自动更新发布流程
 
 1. 修改 `Workbench.csproj` 中的 `Version`。
 2. 重新构建应用与安装器。
 3. 在 GitHub 创建对应版本标签，例如 `v1.1.0`。
-4. 将安装包以固定文件名 `WorkbenchSetup.exe` 上传至 Release。
+4. 将小型更新引导程序以固定文件名 `WorkbenchSetup.exe` 上传至 Release。
+5. 将完整离线安装包以固定文件名 `WorkbenchFullSetup.exe` 上传至同一个 Release。
 
 程序读取 `li85120194-netizen/Workbench` 的最新 Release，并比较语义版本号。
 

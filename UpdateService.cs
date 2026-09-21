@@ -35,7 +35,7 @@ public static class UpdateService
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
         };
         var client = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("Workbench-Updater/1.0.3");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("Workbench-Updater/1.0.4");
         return client;
     }
 

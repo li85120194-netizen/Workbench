@@ -18,7 +18,7 @@
      <Button x:Name="OrganizerNav" Content="▦  桌面收纳" Style="{StaticResource NavButton}" Click="OrganizerNav_Click"/>
      <Button x:Name="SettingsNav" Content="⚙  设置与更新" Style="{StaticResource NavButton}" Click="SettingsNav_Click"/>
     </StackPanel>
-    <TextBlock Grid.Row="2" Text="v1.0.3" Foreground="#8290A8" HorizontalAlignment="Center" FontSize="12"/>
+    <TextBlock Grid.Row="2" Text="v1.0.4" Foreground="#8290A8" HorizontalAlignment="Center" FontSize="12"/>
    </Grid>
   </Border>
   <Grid Grid.Column="1" Margin="30,24">
@@ -60,7 +60,7 @@
 
    <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed"><StackPanel>
     <TextBlock Text="设置与更新" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="管理版本更新和应用信息。" Foreground="#687386" Margin="0,4,0,18"/>
-    <Border Padding="22" CornerRadius="12" Background="White"><StackPanel><TextBlock Text="工具箱 v1.0.3" FontSize="19" FontWeight="SemiBold"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,16,0,14"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource ActionButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度和剩余时间，完成后自动安装并重新打开工具箱。" Foreground="#687386" Margin="0,14,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+    <Border Padding="22" CornerRadius="12" Background="White"><StackPanel><TextBlock Text="工具箱 v1.0.4" FontSize="19" FontWeight="SemiBold"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,16,0,14"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource ActionButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度和剩余时间，完成后自动安装并重新打开工具箱。" Foreground="#687386" Margin="0,14,0,0" TextWrapping="Wrap"/></StackPanel></Border>
    </StackPanel></ScrollViewer>
   </Grid>
  </Grid>

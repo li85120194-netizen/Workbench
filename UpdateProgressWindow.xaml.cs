@@ -11,7 +11,7 @@ public partial class UpdateProgressWindow : Window
     public UpdateProgressWindow(string version)
     {
         InitializeComponent();
-        StatusText.Text = $"正在下载工具箱 v{version} 完整安装包…";
+        StatusText.Text = $"正在下载工具箱 v{version} 更新引导程序…";
     }
 
     public async Task<bool> DownloadAndStartInstallerAsync(UpdateResult update)
@@ -25,7 +25,7 @@ public partial class UpdateProgressWindow : Window
             DownloadProgressBar.Value = 100;
             PercentText.Text = "100%";
             StatusText.Text = "下载完成，正在启动安装程序…";
-            DownloadedText.Text = "完整安装包已下载，工具箱将自动关闭并升级。";
+            DownloadedText.Text = "更新引导程序已就绪，即将继续下载完整安装包。";
             RemainingText.Text = "00:00";
             CancelButton.IsEnabled = false;
 
