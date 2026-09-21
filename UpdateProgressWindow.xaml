@@ -1,0 +1,62 @@
+<Window x:Class="Workbench.UpdateProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="工具箱更新" Width="520" Height="310"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F4F6FA" Closing="Window_Closing">
+    <Grid Margin="26">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="正在更新工具箱" FontSize="24" FontWeight="SemiBold" Foreground="#172033"/>
+        <TextBlock x:Name="StatusText" Grid.Row="1" Margin="0,8,0,18"
+                   Text="正在连接 GitHub…" Foreground="#687386" FontSize="14"/>
+
+        <ProgressBar x:Name="DownloadProgressBar" Grid.Row="2" Height="18"
+                     Minimum="0" Maximum="100" IsIndeterminate="True"/>
+
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="DownloadedText" Text="准备下载完整安装包…" Foreground="#39445A"/>
+            <TextBlock x:Name="PercentText" Grid.Column="1" Text="--%" FontWeight="SemiBold" Foreground="#1677FF"/>
+        </Grid>
+
+        <Border Grid.Row="4" Margin="0,16,0,14" Padding="14" CornerRadius="8" Background="White">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="下载速度" Foreground="#7A8496" FontSize="12"/>
+                    <TextBlock x:Name="SpeedText" Text="--" Margin="0,5,0,0" FontWeight="SemiBold"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="已用时间" Foreground="#7A8496" FontSize="12"/>
+                    <TextBlock x:Name="ElapsedText" Text="00:00" Margin="0,5,0,0" FontWeight="SemiBold"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="预计剩余" Foreground="#7A8496" FontSize="12"/>
+                    <TextBlock x:Name="RemainingText" Text="计算中…" Margin="0,5,0,0" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="5">
+            <TextBlock Text="下载完成后会自动安装并重新打开工具箱。"
+                       VerticalAlignment="Center" Foreground="#687386" FontSize="12"/>
+            <Button x:Name="CancelButton" Content="取消更新" Width="96" Height="34"
+                    HorizontalAlignment="Right" Click="CancelButton_Click"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -20,18 +20,12 @@ public partial class MainWindow : Window
     private Slider? _timerBackgroundOpacity;
     private TextBlock? _timerBackgroundOpacityText;
     private Border? _timerBackgroundPreview;
+    private bool _checkingForUpdate;
 
     public MainWindow()
     {
         InitializeComponent();
-        Loaded += (_, _) => { RefreshOrganizerStatus(); SwapTimerAndMouseNavigation(); AddTimerBackgroundControls(); };
-    }
-
-    private void SwapTimerAndMouseNavigation()
-    {
-        if (MouseNav.Parent is not StackPanel panel) return;
-        panel.Children.Remove(TimerNav);
-        panel.Children.Insert(0, TimerNav);
+        Loaded += (_, _) => { RefreshOrganizerStatus(); AddTimerBackgroundControls(); };
     }
 
     private void AddTimerBackgroundControls()
@@ -201,14 +195,53 @@ public partial class MainWindow : Window
     private async void CheckUpdateButton_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(true);
     private async Task CheckForUpdatesAsync(bool showResult)
     {
+        if (_checkingForUpdate) return;
+        _checkingForUpdate = true;
+        CheckUpdateButton.IsEnabled = false;
+        CheckUpdateButton.Content = "正在检查…";
         try
         {
             var result = await UpdateService.CheckAsync();
             if (!result.UpdateAvailable) { if (showResult) System.Windows.MessageBox.Show("当前已经是最新版本。", "工具箱"); return; }
             if (System.Windows.MessageBox.Show($"发现工具箱 {result.Version}，是否下载并安装？", "发现更新", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
-                await UpdateService.DownloadAndInstallAsync(result);
+            {
+                var progressWindow = new UpdateProgressWindow(result.Version) { Owner = this };
+                progressWindow.Show();
+                IsEnabled = false;
+                try
+                {
+                    bool installerStarted = await progressWindow.DownloadAndStartInstallerAsync(result);
+                    if (installerStarted)
+                    {
+                        System.Windows.Application.Current.Shutdown();
+                        return;
+                    }
+                }
+                finally
+                {
+                    if (IsVisible) IsEnabled = true;
+                    if (progressWindow.IsVisible) progressWindow.CloseSafely();
+                }
+            }
         }
-        catch (Exception ex) { if (showResult) System.Windows.MessageBox.Show($"检查更新失败：{ex.Message}", "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (OperationCanceledException)
+        {
+            if (showResult) System.Windows.MessageBox.Show("检查更新已取消。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            if (showResult)
+                System.Windows.MessageBox.Show($"更新失败：{ex.Message}\n\n请确认网络可以访问 GitHub 后再重试。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally
+        {
+            _checkingForUpdate = false;
+            if (CheckUpdateButton is not null)
+            {
+                CheckUpdateButton.IsEnabled = true;
+                CheckUpdateButton.Content = "立即检查更新";
+            }
+        }
     }
 
     private void SetStatus(bool enabled)

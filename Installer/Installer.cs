@@ -20,7 +20,12 @@ internal static class WorkbenchInstaller
     static void Main(string[] args)
     {
         if (Array.Exists(args, a => a.Equals("/uninstall", StringComparison.OrdinalIgnoreCase))) { Uninstall(); return; }
-        if (Array.Exists(args, a => a.Equals("/VERYSILENT", StringComparison.OrdinalIgnoreCase))) { Install(true); return; }
+        if (Array.Exists(args, a => a.Equals("/VERYSILENT", StringComparison.OrdinalIgnoreCase)))
+        {
+            WaitForParentProcess(args);
+            Install(true);
+            return;
+        }
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         Application.Run(new InstallerForm());
@@ -40,7 +45,7 @@ internal static class WorkbenchInstaller
             TryDelete(LegacyDesktopShortcut);
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench"))
             {
-                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.0.2"); key.SetValue("Publisher", "Toolbox");
+                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.0.3"); key.SetValue("Publisher", "Toolbox");
                 key.SetValue("DisplayIcon", AppPath); key.SetValue("UninstallString", "\"" + UninstallPath + "\" /uninstall");
                 key.SetValue("InstallLocation", InstallDir); key.SetValue("NoModify", 1); key.SetValue("NoRepair", 1);
             }
@@ -61,6 +66,14 @@ internal static class WorkbenchInstaller
     }
 
     static void TryDelete(string path) { try { if (File.Exists(path)) File.Delete(path); } catch { } }
+    static void WaitForParentProcess(string[] args)
+    {
+        int index = Array.FindIndex(args, a => a.Equals("/PID", StringComparison.OrdinalIgnoreCase));
+        int processId;
+        if (index < 0 || index + 1 >= args.Length || !int.TryParse(args[index + 1], out processId)) return;
+        try { Process.GetProcessById(processId).WaitForExit(20000); } catch { }
+    }
+
     static void CreateShortcut(string shortcutPath, string target)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(shortcutPath));
