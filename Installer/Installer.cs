@@ -45,7 +45,7 @@ internal static class WorkbenchInstaller
             TryDelete(LegacyDesktopShortcut);
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench"))
             {
-                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.0.5"); key.SetValue("Publisher", "Toolbox");
+                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.1.0"); key.SetValue("Publisher", "Toolbox");
                 key.SetValue("DisplayIcon", AppPath); key.SetValue("UninstallString", "\"" + UninstallPath + "\" /uninstall");
                 key.SetValue("InstallLocation", InstallDir); key.SetValue("NoModify", 1); key.SetValue("NoRepair", 1);
             }
@@ -94,7 +94,7 @@ internal static class WorkbenchInstaller
             try { Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location); } catch { }
             var infinity = new Label { Text="∞", Font=new Font("Segoe UI",52,FontStyle.Bold), ForeColor=Color.FromArgb(48,174,230), AutoSize=true, Location=new Point(42,30) };
             var title = new Label { Text="工具箱", Font=new Font("Microsoft YaHei UI",22,FontStyle.Bold), AutoSize=true, Location=new Point(145,48) };
-            var desc = new Label { Text="鼠标高亮 · 倒计时 · 桌面收纳", Font=new Font("Microsoft YaHei UI",11), ForeColor=Color.FromArgb(92,104,124), AutoSize=true, Location=new Point(148,92) };
+            var desc = new Label { Text="演示 · 计时 · 文件 · 图片 · PDF", Font=new Font("Microsoft YaHei UI",11), ForeColor=Color.FromArgb(92,104,124), AutoSize=true, Location=new Point(148,92) };
             var path = new Label { Text="安装位置："+InstallDir, Font=new Font("Microsoft YaHei UI",9), ForeColor=Color.FromArgb(92,104,124), AutoSize=true, Location=new Point(45,160) };
             launch.Text="安装完成后启动工具箱"; launch.Checked=true; launch.AutoSize=true; launch.Location=new Point(45,205);
             install.Text="立即安装"; install.Font=new Font("Microsoft YaHei UI",11,FontStyle.Bold); install.Size=new Size(150,46); install.Location=new Point(325,245); install.BackColor=Color.FromArgb(22,119,255); install.ForeColor=Color.White; install.FlatStyle=FlatStyle.Flat;

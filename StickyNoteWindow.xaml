@@ -1,0 +1,27 @@
+<Window x:Class="Workbench.StickyNoteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="桌面便签" Width="320" Height="300" MinWidth="240" MinHeight="180"
+        WindowStyle="None" ResizeMode="CanResizeWithGrip" AllowsTransparency="True"
+        Background="Transparent" Topmost="True" ShowInTaskbar="False">
+    <Border Background="#FFFFD86A" CornerRadius="10" BorderBrush="#33A06B00" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="44"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="38"/>
+            </Grid.RowDefinitions>
+            <Grid Background="#18FFFFFF" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <TextBox x:Name="TitleBox" Margin="12,6,46,5" BorderThickness="0" Background="Transparent"
+                         FontSize="15" FontWeight="SemiBold" VerticalContentAlignment="Center" TextChanged="Editor_Changed"/>
+                <Button Content="×" Width="32" Height="28" HorizontalAlignment="Right" Margin="0,6,8,0"
+                        VerticalAlignment="Top" BorderThickness="0" Background="Transparent" FontSize="18" Click="Close_Click"/>
+            </Grid>
+            <TextBox x:Name="ContentBox" Grid.Row="1" Margin="12,8" BorderThickness="0" Background="Transparent"
+                     AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="14"
+                     TextChanged="Editor_Changed"/>
+            <CheckBox x:Name="DoneCheck" Grid.Row="2" Margin="12,0" Content="已完成" VerticalAlignment="Center"
+                      Checked="Editor_Changed" Unchecked="Editor_Changed"/>
+        </Grid>
+    </Border>
+</Window>

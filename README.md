@@ -1,96 +1,78 @@
 # 工具箱
 
-## v1.0.5
+工具箱是一款面向 Windows 10/11 的轻量桌面效率应用。它把演示辅助、计时、便签、文件整理、图片处理和 PDF 工具整合在同一个原生 WPF 应用中，安装后可通过桌面快捷方式或系统托盘使用。
 
-- 完整安装包改为国内加速线路优先，无需 VPN；GitHub 官方地址作为最后兜底。
-- 使用四路并行分段下载，并在单条线路失败时自动切换其他线路。
-- 下载完成后强制校验文件大小和 SHA-256，第三方线路返回的文件不一致时拒绝运行。
-- 本机实测加速线路约 457–612KB/s，GitHub 直连约 8.7KB/s。
+## v1.1.0
 
-## v1.0.4
+### 新增功能
 
-- 新增小型更新引导程序，旧版只需先下载一个很小的 EXE，避免 69MB 完整安装包被旧版 15 秒超时中断。
-- 引导程序显示完整安装包的百分比、文件大小、速度、已用时间和预计剩余时间。
-- 完整安装包下载完成后自动安装，并重新打开工具箱。
-- Release 中 `WorkbenchSetup.exe` 为更新引导程序，`WorkbenchFullSetup.exe` 为完整离线安装包。
+- 剪贴板历史：监听文本剪贴板，保留最近 100 条记录，可预览、重新复制、单条删除或全部清空。
+- 系统托盘：最小化时隐藏到托盘；托盘菜单可打开工具箱、切换鼠标高亮、切换屏幕标注或退出。
+- 番茄钟：支持自定义专注、短休息、长休息和轮次数；自动循环并通过托盘提醒。
+- 桌面便签 / 待办：本地保存标题、正文和完成状态；可将任意便签显示为可拖动、可缩放、始终置顶的独立窗口。
+- 文件批量重命名：支持查找替换、正则表达式、前后缀和自动编号；执行前预览并检测重名冲突。
+- 图片压缩与格式转换：批量输出 JPEG、PNG、BMP、TIFF、GIF，可调 JPEG 质量和最长边尺寸，不覆盖原图。
+- PDF 工具：本地合并、逐页拆分、按页码范围提取、整本旋转，不上传文件。
 
-## v1.0.3
+### 原有功能
 
-- 修复网络稍慢时检查更新在 15 秒后失败的问题，增加超时放宽、自动重试及备用检查地址。
-- 新增更新进度窗口，显示下载百分比、文件大小、速度、已用时间和预计剩余时间。
-- 下载完整安装包后自动关闭旧版、静默覆盖安装，并自动重新打开工具箱。
+- 鼠标高亮：`F1` 全局开启 / 关闭，支持圆环、方框、十字准星、颜色、大小、相对位置和动态主题。
+- 屏幕标注：`F2` 全局开启 / 关闭。
+- 键盘按键显示。
+- 悬浮倒计时：透明背景、可拖动缩放；归零后继续显示红色负计时。
+- 桌面收纳：预览、按日期整理办公文档、撤回上一次整理。
+- 单实例运行、Per-Monitor V2 DPI、多显示器和 GitHub Releases 自动更新。
 
-## v1.0.2
+## 数据与隐私
 
-- 倒计时与鼠标高亮在左侧导航栏中互换位置。
-- 悬浮倒计时默认使用完全透明背景。
-- 归零后继续以红色负数计时，例如 `-00:01`。
-- 支持自行配置倒计时背景颜色和不透明度。
+剪贴板历史、便签和设置只写入：
 
-面向 Windows 10/11 的轻量桌面效率工具，将鼠标高亮、演示标注、悬浮倒计时和桌面文档收纳整合在同一个应用中。
+```text
+%LOCALAPPDATA%\Toolbox\state.json
+```
 
-## 功能
-
-### 鼠标高亮
-
-- `F1` 全局开启/关闭高亮，系统指针保持不变
-- 红环、方框、十字准星，自定义颜色、大小和相对位置
-- 聚光与霓虹主题，可选动态呼吸效果
-- 事件驱动跟随，点击穿透，支持多显示器与 Per-Monitor V2 DPI
-- `F2` 开启/关闭全屏自由标注
-- 可选显示键盘按键与组合键
-
-### 倒计时
-
-- 设置分钟与秒数
-- 独立无边框悬浮窗口，始终置顶
-- 可拖动、缩放、开始/暂停、重置
-- 倒计时结束变红提示
-
-### 桌面收纳
-
-- 执行前预览待整理文件
-- 将 Word、Excel、PowerPoint、PDF、TXT、CSV、WPS 等办公文档移动到桌面的当天日期文件夹
-- 自动避免重名覆盖
-- 跳过程序、快捷方式、文件夹、隐藏与系统文件
-- 支持撤回上一次收纳
-
-### 安装与更新
-
-- `WorkbenchSetup.exe` 是约 76KB 的在线更新引导程序，适合自动更新和在线安装
-- `WorkbenchFullSetup.exe` 是包含完整运行环境的离线安装包，无需管理员权限
-- 自动创建桌面及开始菜单快捷方式
-- 可从 Windows“已安装的应用”中卸载
-- 启动时通过 GitHub Releases 检查新版本
-- 用户确认后显示下载进度、文件大小、速度和预计剩余时间
-- 下载完整安装包后自动覆盖升级并重新打开应用
+图片和 PDF 处理完全在本机完成。应用不会上传这些内容。剪贴板历史只记录文本，单条超过 200,000 字符时跳过，最多保留 100 条。
 
 ## 构建
 
 要求：Windows 10/11、.NET 6 SDK。
 
 ```powershell
+dotnet restore
+dotnet build -c Release
 dotnet publish -c Release
 ```
 
-发布文件位于：
+单文件程序位于：
 
 ```text
 bin\Release\net6.0-windows\win-x64\publish\Workbench.exe
 ```
 
-完整安装器源码位于 `Installer/Installer.cs`，更新引导程序源码位于 `Installer/Bootstrapper.cs`。两者均使用 Windows 自带的 .NET Framework C# 编译器构建；完整安装器会将发布后的 `Workbench.exe` 嵌入为资源。
+构建完整离线安装包和小型在线更新引导程序：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
+```
+
+脚本会生成：
+
+- `WorkbenchFullSetup.exe`：包含自带 .NET 运行时的完整安装包。
+- `WorkbenchSetup.exe`：小型在线引导程序，分段下载完整安装包并校验 SHA-256。
 
 ## 自动更新发布流程
 
-1. 修改 `Workbench.csproj` 中的 `Version`。
-2. 重新构建应用与安装器。
-3. 在 GitHub 创建对应版本标签，例如 `v1.1.0`。
-4. 将小型更新引导程序以固定文件名 `WorkbenchSetup.exe` 上传至 Release。
-5. 将完整离线安装包以固定文件名 `WorkbenchFullSetup.exe` 上传至同一个 Release。
+1. 修改 `Workbench.csproj`、`Installer/Installer.cs`、`Installer/Bootstrapper.cs` 中的版本号。
+2. 运行 `build-installer.ps1`。
+3. 创建同名 Git 标签，例如 `v1.1.0`。
+4. 将 `WorkbenchSetup.exe` 和 `WorkbenchFullSetup.exe` 上传到该 GitHub Release。
+5. 发布 Release。应用启动时会读取最新 Release 并比较语义版本号。
 
-程序读取 `li85120194-netizen/Workbench` 的最新 Release，并比较语义版本号。
+## 设计参考与第三方组件
 
-## 设计参考
+- 文件重命名和图片批处理的交互参考 Microsoft PowerToys 的 PowerRename 与 Image Resizer；实现代码为本项目独立编写。
+- 番茄钟的阶段循环参考 Pomotroid；实现代码为本项目独立编写。
+- 桌面便签的独立窗口交互参考 PaperTodo；实现代码为本项目独立编写。
+- PDF 功能使用 `PDFsharp 6.2.4`，MIT License。完整声明见 `THIRD-PARTY-NOTICES.md`。
 
-实现思路参考了 Microsoft PowerToys Mouse Highlighter、DesktopFences/DesktopBox 的桌面层设计以及 Updatum 的 GitHub Releases 更新流程；本项目代码为独立实现。
+未复制或合并 GPL / AGPL 项目的源代码。

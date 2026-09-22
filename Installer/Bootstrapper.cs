@@ -10,8 +10,8 @@ using System.Windows.Forms;
 
 internal static class WorkbenchBootstrapper
 {
-    const string Version = "1.0.5";
-    const string OriginUrl = "https://github.com/li85120194-netizen/Workbench/releases/download/v1.0.5/WorkbenchFullSetup.exe";
+    const string Version = "1.1.0";
+    const string OriginUrl = "https://github.com/li85120194-netizen/Workbench/releases/download/v1.1.0/WorkbenchFullSetup.exe";
     static long ExpectedSize;
     static string ExpectedSha256;
 

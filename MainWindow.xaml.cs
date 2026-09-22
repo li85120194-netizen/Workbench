@@ -9,7 +9,12 @@ namespace Workbench;
 
 public partial class MainWindow : Window
 {
-    private const int WmHotkey = 0x0312, HotkeyHighlight = 1001, HotkeyAnnotation = 1002;
+    private const int WmHotkey = 0x0312;
+    private const int WmClipboardUpdate = 0x031D;
+    private const int HotkeyHighlight = 1001;
+    private const int HotkeyAnnotation = 1002;
+
+    private readonly ToolboxState _state = StateStore.Load();
     private OverlayWindow? _overlay;
     private AnnotationWindow? _annotation;
     private KeyboardDisplayService? _keyboardDisplay;
@@ -21,11 +26,18 @@ public partial class MainWindow : Window
     private TextBlock? _timerBackgroundOpacityText;
     private Border? _timerBackgroundPreview;
     private bool _checkingForUpdate;
+    private bool _isClosing;
 
     public MainWindow()
     {
         InitializeComponent();
-        Loaded += (_, _) => { RefreshOrganizerStatus(); AddTimerBackgroundControls(); };
+        InitializeFeatureState();
+        Loaded += (_, _) =>
+        {
+            RefreshOrganizerStatus();
+            AddTimerBackgroundControls();
+            InitializeTrayIcon();
+        };
     }
 
     private void AddTimerBackgroundControls()
@@ -54,29 +66,42 @@ public partial class MainWindow : Window
         _source.AddHook(WindowMessageHook);
         RegisterHotKey(handle, HotkeyHighlight, 0x4000, 0x70);
         RegisterHotKey(handle, HotkeyAnnotation, 0x4000, 0x71);
+        AddClipboardFormatListener(handle);
         if (AutoUpdateCheck.IsChecked == true) _ = CheckForUpdatesAsync(false);
     }
 
     private IntPtr WindowMessageHook(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (message != WmHotkey) return IntPtr.Zero;
-        if (wParam.ToInt32() == HotkeyHighlight) ToggleHighlight();
-        else if (wParam.ToInt32() == HotkeyAnnotation) ToggleAnnotation();
-        handled = true;
+        if (message == WmHotkey)
+        {
+            if (wParam.ToInt32() == HotkeyHighlight) ToggleHighlight();
+            else if (wParam.ToInt32() == HotkeyAnnotation) ToggleAnnotation();
+            handled = true;
+        }
+        else if (message == WmClipboardUpdate)
+        {
+            CaptureClipboardText();
+        }
         return IntPtr.Zero;
     }
 
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav)
     {
-        foreach (var item in new[] { MousePage, TimerPage, OrganizerPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
-        foreach (var item in new[] { MouseNav, TimerNav, OrganizerNav, SettingsNav }) item.Background = System.Windows.Media.Brushes.Transparent;
+        foreach (var item in new[] { MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
+        foreach (var item in new[] { MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) item.Background = System.Windows.Media.Brushes.Transparent;
         page.Visibility = Visibility.Visible;
         nav.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(43, 56, 84));
     }
 
     private void MouseNav_Click(object sender, RoutedEventArgs e) => ShowPage(MousePage, MouseNav);
     private void TimerNav_Click(object sender, RoutedEventArgs e) => ShowPage(TimerPage, TimerNav);
+    private void PomodoroNav_Click(object sender, RoutedEventArgs e) => ShowPage(PomodoroPage, PomodoroNav);
+    private void ClipboardNav_Click(object sender, RoutedEventArgs e) => ShowPage(ClipboardPage, ClipboardNav);
+    private void NotesNav_Click(object sender, RoutedEventArgs e) => ShowPage(NotesPage, NotesNav);
     private void OrganizerNav_Click(object sender, RoutedEventArgs e) { ShowPage(OrganizerPage, OrganizerNav); RefreshOrganizerStatus(); }
+    private void RenameNav_Click(object sender, RoutedEventArgs e) => ShowPage(RenamePage, RenameNav);
+    private void ImageNav_Click(object sender, RoutedEventArgs e) => ShowPage(ImagePage, ImageNav);
+    private void PdfNav_Click(object sender, RoutedEventArgs e) => ShowPage(PdfPage, PdfNav);
     private void SettingsNav_Click(object sender, RoutedEventArgs e) => ShowPage(SettingsPage, SettingsNav);
 
     private void EnableButton_Click(object sender, RoutedEventArgs e) => EnableHighlight();
@@ -88,6 +113,7 @@ public partial class MainWindow : Window
     {
         if (_overlay is null) { _overlay = new OverlayWindow(); ApplyOverlaySettings(); _overlay.Show(); }
         SetStatus(true);
+        UpdateTrayMenuText();
     }
 
     private void ToggleAnnotation()
@@ -95,10 +121,11 @@ public partial class MainWindow : Window
         if (_annotation is null)
         {
             _annotation = new AnnotationWindow(_selectedColor);
-            _annotation.Closed += (_, _) => { _annotation = null; AnnotationButton.Content = "屏幕标注  F2"; };
+            _annotation.Closed += (_, _) => { _annotation = null; AnnotationButton.Content = "屏幕标注  F2"; UpdateTrayMenuText(); };
             _annotation.Show(); AnnotationButton.Content = "关闭标注  F2";
         }
         else { _annotation.Close(); _annotation = null; AnnotationButton.Content = "屏幕标注  F2"; }
+        UpdateTrayMenuText();
     }
 
     private void Settings_Changed(object sender, RoutedEventArgs e)
@@ -139,11 +166,18 @@ public partial class MainWindow : Window
     private void StartTimer_Click(object sender, RoutedEventArgs e)
     {
         if (!TryReadTime(out int seconds)) return;
-        _countdown ??= new CountdownWindow();
-        _countdown.Closed += (_, _) => _countdown = null;
+        _countdown ??= CreateCountdownWindow();
         ApplyTimerBackground(); _countdown.Show(); _countdown.Activate(); _countdown.Start(seconds);
     }
-    private void ToggleTimer_Click(object sender, RoutedEventArgs e) { _countdown ??= new CountdownWindow(); if (!_countdown.IsVisible) _countdown.Show(); _countdown.Toggle(); }
+
+    private CountdownWindow CreateCountdownWindow()
+    {
+        var window = new CountdownWindow();
+        window.Closed += (_, _) => _countdown = null;
+        return window;
+    }
+
+    private void ToggleTimer_Click(object sender, RoutedEventArgs e) { _countdown ??= CreateCountdownWindow(); if (!_countdown.IsVisible) _countdown.Show(); _countdown.Toggle(); }
     private void ResetTimer_Click(object sender, RoutedEventArgs e) => _countdown?.Reset();
 
     private void TimerBackgroundButton_Click(object sender, RoutedEventArgs e)
@@ -193,6 +227,7 @@ public partial class MainWindow : Window
     }
 
     private async void CheckUpdateButton_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(true);
+
     private async Task CheckForUpdatesAsync(bool showResult)
     {
         if (_checkingForUpdate) return;
@@ -210,8 +245,7 @@ public partial class MainWindow : Window
                 IsEnabled = false;
                 try
                 {
-                    bool installerStarted = await progressWindow.DownloadAndStartInstallerAsync(result);
-                    if (installerStarted)
+                    if (await progressWindow.DownloadAndStartInstallerAsync(result))
                     {
                         System.Windows.Application.Current.Shutdown();
                         return;
@@ -230,17 +264,12 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            if (showResult)
-                System.Windows.MessageBox.Show($"更新失败：{ex.Message}\n\n请确认网络可以访问 GitHub 后再重试。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (showResult) System.Windows.MessageBox.Show($"更新失败：{ex.Message}\n\n请稍后重试；下载程序会自动选择可用线路。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally
         {
             _checkingForUpdate = false;
-            if (CheckUpdateButton is not null)
-            {
-                CheckUpdateButton.IsEnabled = true;
-                CheckUpdateButton.Content = "立即检查更新";
-            }
+            if (CheckUpdateButton is not null) { CheckUpdateButton.IsEnabled = true; CheckUpdateButton.Content = "立即检查更新"; }
         }
     }
 
@@ -251,15 +280,38 @@ public partial class MainWindow : Window
         EnableButton.IsEnabled = !enabled; DisableButton.IsEnabled = enabled;
     }
 
-    private void DisableHighlight() { _overlay?.Close(); _overlay = null; SetStatus(false); }
+    private void DisableHighlight()
+    {
+        _overlay?.Close(); _overlay = null; SetStatus(false); UpdateTrayMenuText();
+    }
+
+    private void Window_StateChanged(object? sender, EventArgs e)
+    {
+        if (WindowState == WindowState.Minimized && MinimizeToTrayCheck.IsChecked == true)
+        {
+            Hide();
+            ShowTrayHintOnce();
+        }
+    }
+
     private void Window_Closing(object? sender, CancelEventArgs e)
     {
+        if (_isClosing) return;
+        _isClosing = true;
         DisableHighlight(); _annotation?.Close(); _keyboardDisplay?.Dispose(); _countdown?.Close();
+        ShutdownFeatures();
         var handle = new WindowInteropHelper(this).Handle;
-        if (handle != IntPtr.Zero) { UnregisterHotKey(handle, HotkeyHighlight); UnregisterHotKey(handle, HotkeyAnnotation); }
+        if (handle != IntPtr.Zero)
+        {
+            UnregisterHotKey(handle, HotkeyHighlight);
+            UnregisterHotKey(handle, HotkeyAnnotation);
+            RemoveClipboardFormatListener(handle);
+        }
         _source?.RemoveHook(WindowMessageHook);
     }
 
     [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
     [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+    [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] private static extern bool AddClipboardFormatListener(IntPtr hwnd);
+    [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] private static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
 }
