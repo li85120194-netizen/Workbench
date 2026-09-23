@@ -1,7 +1,7 @@
 <Window x:Class="Workbench.UpdateProgressWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="工具箱更新" Width="520" Height="310"
+        Title="工具箱更新" Width="520" Height="360" MinHeight="360"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Background="#F4F6FA" Closing="Window_Closing">
     <Grid Margin="26">
@@ -30,7 +30,7 @@
             <TextBlock x:Name="PercentText" Grid.Column="1" Text="--%" FontWeight="SemiBold" Foreground="#1677FF"/>
         </Grid>
 
-        <Border Grid.Row="4" Margin="0,16,0,14" Padding="14" CornerRadius="8" Background="White">
+        <Border Grid.Row="4" Margin="0,16,0,14" Padding="14" MinHeight="76" CornerRadius="8" Background="White">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

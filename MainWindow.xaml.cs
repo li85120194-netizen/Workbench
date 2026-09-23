@@ -35,12 +35,15 @@ public partial class MainWindow : Window
     private bool _applyingPreferences;
     private bool _checkingForUpdate;
     private bool _isClosing;
+    private readonly Dictionary<UIElement, Border> _openTabs = new();
+    private UIElement? _activePage;
 
     public MainWindow()
     {
         _activeAccount = AccountStore.Find(_state.CurrentAccountId);
         InitializeComponent();
         InitializeFeatureState();
+        ShowPage(HomePage, HomeNav, "首页");
         Loaded += (_, _) =>
         {
             RefreshOrganizerStatus();
@@ -174,6 +177,7 @@ public partial class MainWindow : Window
 
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav, string title)
     {
+        EnsureTab(page, nav, title);
         foreach (var item in new[] { HomePage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
         foreach (var item in new[] { HomeNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
         {
@@ -181,15 +185,72 @@ public partial class MainWindow : Window
             item.BorderBrush = System.Windows.Media.Brushes.Transparent;
         }
         page.Visibility = Visibility.Visible;
+        _activePage = page;
         nav.Background = (System.Windows.Media.Brush)FindResource("ActiveNavBrush");
         nav.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(88, 216, 255));
         CurrentPageTitle.Text = title;
+        UpdateTabStyles();
         if (nav == MouseNav) PresentationExpander.IsExpanded = true;
         else if (nav == TimerNav || nav == PomodoroNav) TimeExpander.IsExpanded = true;
         else if (nav == ClipboardNav || nav == NotesNav) RecordExpander.IsExpanded = true;
         else if (nav == OrganizerNav || nav == RenameNav || nav == ImageNav || nav == PdfNav) FileExpander.IsExpanded = true;
     }
 
+    private void EnsureTab(UIElement page, System.Windows.Controls.Button nav, string title)
+    {
+        if (_openTabs.ContainsKey(page)) return;
+        var tab = new Border { Background = System.Windows.Media.Brushes.White, BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(207, 218, 232)), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(7), Margin = new Thickness(0, 0, 6, 0) };
+        var row = new StackPanel { Orientation = System.Windows.Controls.Orientation.Horizontal };
+        var selectButton = new System.Windows.Controls.Button { Content = title, Background = System.Windows.Media.Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(13, 7, 8, 7), Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(48, 66, 92)), Cursor = System.Windows.Input.Cursors.Hand };
+        selectButton.Click += (_, _) => ShowPage(page, nav, title);
+        var closeButton = new System.Windows.Controls.Button { Content = "×", Background = System.Windows.Media.Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(7, 5, 10, 7), Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(108, 124, 146)), FontSize = 15, Cursor = System.Windows.Input.Cursors.Hand, ToolTip = "关闭" };
+        closeButton.Click += (_, e) => { e.Handled = true; CloseTab(page); };
+        row.Children.Add(selectButton);
+        row.Children.Add(closeButton);
+        tab.Child = row;
+        _openTabs.Add(page, tab);
+        OpenTabsPanel.Children.Add(tab);
+    }
+
+    private void CloseTab(UIElement page)
+    {
+        if (!_openTabs.TryGetValue(page, out var tab)) return;
+        var closedIndex = OpenTabsPanel.Children.IndexOf(tab);
+        OpenTabsPanel.Children.Remove(tab);
+        _openTabs.Remove(page);
+        page.Visibility = Visibility.Collapsed;
+        if (_activePage != page) return;
+        _activePage = null;
+        if (OpenTabsPanel.Children.Count == 0)
+        {
+            CurrentPageTitle.Text = string.Empty;
+            foreach (var nav in new[] { HomeNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
+            return;
+        }
+        var nextIndex = Math.Min(closedIndex, OpenTabsPanel.Children.Count - 1);
+        var nextTab = (Border)OpenTabsPanel.Children[nextIndex];
+        var nextPage = _openTabs.First(pair => pair.Value == nextTab).Key;
+        ShowPage(nextPage, GetNavButton(nextPage), GetPageTitle(nextPage));
+    }
+
+    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
+
+    private string GetPageTitle(UIElement page)
+    {
+        var tab = _openTabs[page];
+        var row = (StackPanel)tab.Child;
+        return ((System.Windows.Controls.Button)row.Children[0]).Content?.ToString() ?? string.Empty;
+    }
+
+    private void UpdateTabStyles()
+    {
+        foreach (var pair in _openTabs)
+        {
+            var active = pair.Key == _activePage;
+            pair.Value.Background = active ? new SolidColorBrush(System.Windows.Media.Color.FromRgb(226, 238, 255)) : System.Windows.Media.Brushes.White;
+            pair.Value.BorderBrush = active ? new SolidColorBrush(System.Windows.Media.Color.FromRgb(76, 139, 239)) : new SolidColorBrush(System.Windows.Media.Color.FromRgb(207, 218, 232));
+        }
+    }
     private void HomeNav_Click(object sender, RoutedEventArgs e) => ShowPage(HomePage, HomeNav, "首页");
     private void MouseNav_Click(object sender, RoutedEventArgs e) => ShowPage(MousePage, MouseNav, "鼠标高亮");
     private void TimerNav_Click(object sender, RoutedEventArgs e) => ShowPage(TimerPage, TimerNav, "倒计时");

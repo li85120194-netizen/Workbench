@@ -151,18 +151,18 @@
    <Grid.RowDefinitions><RowDefinition Height="42"/><RowDefinition Height="*"/></Grid.RowDefinitions>
 
    <Border x:Name="SidebarBorder" Grid.RowSpan="2" Background="{StaticResource SidebarBrush}" CornerRadius="15,0,0,15">
-    <Grid Margin="0,14,0,14"><Grid.RowDefinitions><RowDefinition Height="70"/><RowDefinition Height="54"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <Button x:Name="ProfileButton" Click="ProfileButton_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" HorizontalContentAlignment="Stretch" Padding="14,5">
+    <Grid Margin="0,14,0,14"><Grid.RowDefinitions><RowDefinition Height="54"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <Button x:Name="ProfileButton" Grid.Row="2" Click="ProfileButton_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" HorizontalContentAlignment="Stretch" Padding="14,5">
       <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
        <Grid Width="42" Height="42"><Ellipse x:Name="ProfileAvatarShape" Fill="#DCEAFF"/><TextBlock x:Name="ProfileInitialText" Text="登" Foreground="#2D73DC" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Grid>
        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0"><TextBlock x:Name="ProfileNameText" Text="登录 / 注册" Foreground="White" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="ProfileHintText" Text="本机账户 · 可选" Foreground="#8FA9CA" FontSize="10" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/></StackPanel>
       </Grid>
      </Button>
-     <Grid Grid.Row="1" Margin="16,0"><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+     <Grid Grid.Row="0" Margin="16,0"><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
       <TextBlock Text="∞" FontFamily="Segoe UI" FontSize="38" FontWeight="SemiBold" VerticalAlignment="Center"><TextBlock.Foreground><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#4A8FFF"/><GradientStop Color="#5EE6F7" Offset="1"/></LinearGradientBrush></TextBlock.Foreground></TextBlock>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="工具箱" Foreground="White" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="轻量效率中心" Foreground="#91A8C6" FontSize="10"/></StackPanel>
      </Grid>
-     <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
+     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
       <Button x:Name="HomeNav" Style="{StaticResource NavButton}" Click="HomeNav_Click" BorderBrush="#58D8FF"><Button.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#2875E8"/><GradientStop Color="#244F9B" Offset="1"/></LinearGradientBrush></Button.Background><StackPanel Orientation="Horizontal"><TextBlock Text="⌂" FontSize="18" Width="32"/><TextBlock Text="首页" VerticalAlignment="Center"/></StackPanel></Button>
       <Expander x:Name="PresentationExpander" Header="演示工具" Style="{StaticResource SidebarExpander}"><StackPanel>
        <Button x:Name="MouseNav" Style="{StaticResource NavButton}" Click="MouseNav_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="◎" FontSize="18" Width="32"/><TextBlock Text="鼠标高亮" VerticalAlignment="Center"/></StackPanel></Button>
@@ -183,7 +183,7 @@
       </StackPanel></Expander>
       <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="SettingsNav_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="⚙" FontSize="17" Width="32"/><TextBlock Text="设置与更新" VerticalAlignment="Center"/></StackPanel></Button>
      </StackPanel></ScrollViewer>
-     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.2.0" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
+     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.2.1" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
     </Grid>
    </Border>
    <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragCompleted="SidebarSplitter_DragCompleted" ToolTip="拖动调整菜单宽度"/>
@@ -198,6 +198,11 @@
    </Grid>
 
    <Grid Grid.Column="2" Grid.Row="1" Margin="20,2,20,18">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <Border Background="#EAF0F8" BorderBrush="#D6E0ED" BorderThickness="1" CornerRadius="9" Padding="5" Margin="0,0,0,10">
+     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"><StackPanel x:Name="OpenTabsPanel" Orientation="Horizontal"/></ScrollViewer>
+    </Border>
+    <Grid Grid.Row="1">
     <ScrollViewer x:Name="HomePage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
      <Border CornerRadius="16" ClipToBounds="True" MinHeight="590">
       <Grid>
@@ -322,8 +327,9 @@
 
     <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
      <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#EDF2F8" VerticalAlignment="Center"><TextBlock Text="⚙" FontSize="31" Foreground="#49617F" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="设置与更新" Style="{StaticResource PageTitle}"/><TextBlock Text="管理托盘行为、版本更新和应用信息。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
-     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="工具箱 v1.2.0" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开工具箱。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="工具箱 v1.2.1" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开工具箱。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
     </StackPanel></ScrollViewer>
+    </Grid>
    </Grid>
   </Grid>
  </Border>
