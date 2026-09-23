@@ -1,0 +1,19 @@
+<Window x:Class="Workbench.PomodoroFloatWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Width="280" Height="136" MinWidth="220" MinHeight="112"
+ WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+ Topmost="True" ShowInTaskbar="False" ResizeMode="CanResizeWithGrip">
+ <Border Background="#ED10243F" BorderBrush="#405F86" BorderThickness="1" CornerRadius="16" Padding="16" MouseLeftButtonDown="DragArea_MouseLeftButtonDown">
+  <Grid><Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel><TextBlock x:Name="StageText" Text="专注时间" Foreground="#BBD0EB" FontSize="12"/><TextBlock x:Name="TimeText" Text="25:00" Foreground="White" FontSize="38" FontWeight="SemiBold" FontFamily="Segoe UI"/></StackPanel>
+    <Button Grid.Column="1" Content="×" Click="Hide_Click" Width="28" Height="28" Background="Transparent" BorderThickness="0" Foreground="#C8D8EA" FontSize="18" VerticalAlignment="Top"/>
+   </Grid>
+   <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,0">
+    <Button x:Name="ToggleButton" Content="暂停" Click="Toggle_Click" Width="64" Height="28" Margin="4,0" Background="#2D7EF2" Foreground="White" BorderThickness="0"/>
+    <Button Content="下一段" Click="Skip_Click" Width="64" Height="28" Margin="4,0" Background="#294462" Foreground="White" BorderBrush="#527296"/>
+   </StackPanel>
+  </Grid>
+ </Border>
+</Window>

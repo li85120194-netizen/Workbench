@@ -13,6 +13,26 @@ public sealed class ToolboxState
     public bool MinimizeToTray { get; set; } = true;
     public List<ClipboardEntry> ClipboardHistory { get; set; } = new();
     public List<NoteItem> Notes { get; set; } = new();
+    public Guid? CurrentAccountId { get; set; }
+    public ToolboxPreferences GuestPreferences { get; set; } = new();
+}
+
+public sealed class ToolboxPreferences
+{
+    public double SidebarWidth { get; set; } = 184;
+    public int HighlightTheme { get; set; }
+    public int HighlightShape { get; set; }
+    public int HighlightPosition { get; set; }
+    public int HighlightSize { get; set; } = 32;
+    public string HighlightColor { get; set; } = "#FF0000";
+    public bool DynamicHighlight { get; set; }
+    public bool KeyboardDisplay { get; set; }
+    public int TimerBackgroundOpacity { get; set; } = 50;
+    public string TimerBackgroundColor { get; set; } = "#FFFFFF";
+    public int PomodoroWorkMinutes { get; set; } = 25;
+    public int PomodoroShortMinutes { get; set; } = 5;
+    public int PomodoroLongMinutes { get; set; } = 15;
+    public int PomodoroRounds { get; set; } = 4;
 }
 
 public sealed class ClipboardEntry
@@ -76,7 +96,7 @@ public sealed class NoteItem : INotifyPropertyChanged
 public static class StateStore
 {
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
-    private static readonly string DirectoryPath = GetStateDirectory();
+    public static readonly string DirectoryPath = GetStateDirectory();
     private static readonly string StatePath = Path.Combine(DirectoryPath, "state.json");
 
     private static string GetStateDirectory()

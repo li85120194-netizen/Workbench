@@ -25,6 +25,14 @@ public partial class App : System.Windows.Application
             Shutdown(); return;
         }
         base.OnStartup(e);
+#if DEBUG
+        if (Environment.GetEnvironmentVariable("TOOLBOX_ACCOUNT_PREVIEW") == "1")
+        {
+            MainWindow = new AccountWindow(null);
+            MainWindow.Show();
+            return;
+        }
+#endif
         MainWindow = new MainWindow(); MainWindow.Show();
     }
 

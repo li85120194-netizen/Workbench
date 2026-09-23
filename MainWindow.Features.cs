@@ -24,6 +24,7 @@ public partial class MainWindow
     private string? _imageOutputDirectory;
     private DispatcherTimer? _stateSaveTimer;
     private DispatcherTimer? _pomodoroTimer;
+    private PomodoroFloatWindow? _pomodoroWindow;
     private DateTime _pomodoroEndUtc;
     private int _pomodoroRemainingSeconds = 25 * 60;
     private int _pomodoroTotalSeconds = 25 * 60;
@@ -128,6 +129,7 @@ public partial class MainWindow
     {
         try
         {
+            CapturePreferences();
             _state.ClipboardMonitoringEnabled = ClipboardMonitorCheck.IsChecked == true;
             _state.AutoCheckUpdates = AutoUpdateCheck.IsChecked == true;
             _state.MinimizeToTray = MinimizeToTrayCheck.IsChecked == true;
@@ -201,7 +203,11 @@ public partial class MainWindow
         ScheduleStateSave();
     }
 
-    private void UpdateClipboardCount() => ClipboardCountText.Text = $"{_clipboardEntries.Count} 条";
+    private void UpdateClipboardCount()
+    {
+        ClipboardCountText.Text = $"{_clipboardEntries.Count} 条";
+        if (HomeClipboardCount is not null) HomeClipboardCount.Text = $"{_clipboardEntries.Count} 条";
+    }
 
     private void PomodoroStart_Click(object sender, RoutedEventArgs e)
     {
@@ -217,6 +223,7 @@ public partial class MainWindow
             _pomodoroEndUtc = DateTime.UtcNow.AddSeconds(_pomodoroRemainingSeconds);
             _pomodoroRunning = true;
             _pomodoroTimer?.Start();
+            ShowPomodoroWindow();
         }
         UpdatePomodoroDisplay();
     }
@@ -286,6 +293,20 @@ public partial class MainWindow
         PomodoroStartButton.Content = _pomodoroRunning ? "暂停" : "开始";
         PomodoroProgress.Value = _pomodoroTotalSeconds <= 0 ? 0 : 100.0 * (_pomodoroTotalSeconds - _pomodoroRemainingSeconds) / _pomodoroTotalSeconds;
         PomodoroCountText.Text = $"今日已完成 {_completedPomodoros} 个番茄";
+        _pomodoroWindow?.UpdateState(PomodoroStageText.Text, PomodoroTimeText.Text, _pomodoroRunning);
+        if (HomePomodoroTime is not null) HomePomodoroTime.Text = PomodoroTimeText.Text;
+    }
+
+    private void ShowPomodoroWindow()
+    {
+        if (_pomodoroWindow is null)
+        {
+            _pomodoroWindow = new PomodoroFloatWindow();
+            _pomodoroWindow.ToggleRequested += () => Dispatcher.Invoke(() => PomodoroStart_Click(this, new RoutedEventArgs()));
+            _pomodoroWindow.SkipRequested += () => Dispatcher.Invoke(() => AdvancePomodoro(false));
+        }
+        _pomodoroWindow.UpdateState(PomodoroStageText.Text, PomodoroTimeText.Text, _pomodoroRunning);
+        if (!_pomodoroWindow.IsVisible) _pomodoroWindow.Show();
     }
 
     private static int ReadPositive(string text, int fallback, int minimum, int maximum) => int.TryParse(text, out var value) ? Math.Clamp(value, minimum, maximum) : fallback;
@@ -363,6 +384,15 @@ public partial class MainWindow
     }
 
     private void RenameRule_Changed(object sender, RoutedEventArgs e) => UpdateRenamePreview();
+
+    private void RenamePreviewGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (RenamePreviewGrid.Columns.Count < 3) return;
+        var available = Math.Max(360, e.NewSize.Width - 116);
+        RenamePreviewGrid.Columns[0].Width = new DataGridLength(available / 2);
+        RenamePreviewGrid.Columns[1].Width = new DataGridLength(available / 2);
+        RenamePreviewGrid.Columns[2].Width = new DataGridLength(110);
+    }
 
     private void UpdateRenamePreview()
     {
@@ -490,7 +520,10 @@ public partial class MainWindow
 
     private void ShutdownFeatures()
     {
+        _homeClockTimer?.Stop();
         _pomodoroTimer?.Stop();
+        _pomodoroWindow?.Shutdown();
+        _pomodoroWindow = null;
         _stateSaveTimer?.Stop();
         foreach (var window in _stickyWindows.Values.ToList()) window.Close();
         _stickyWindows.Clear();

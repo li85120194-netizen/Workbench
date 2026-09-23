@@ -2,6 +2,19 @@
 
 工具箱是一款面向 Windows 10/11 的轻量桌面效率应用。它把演示辅助、计时、便签、文件整理、图片处理和 PDF 工具整合在同一个原生 WPF 应用中，安装后可通过桌面快捷方式或系统托盘使用。
 
+## v1.2.0
+
+### 首页、账户与紧凑布局
+
+- 新增首页仪表盘：时间日期、网页搜索、番茄钟、待办、剪贴板和鼠标高亮状态集中展示，并可快速打开全部工具。
+- 主窗口缩小为更紧凑的默认尺寸；各页面输入框、表格和说明文字重新排版，避免文字被裁切。
+- 左侧导航按演示工具、时间管理、记录与待办、文件处理分组；拖动侧栏右边缘可调整宽度。
+- 新增可选的本机账户注册与登录、头像和显示名称；无需登录也可完整使用。
+- 密码使用 PBKDF2-SHA256 加盐哈希保存；账户资料和个人偏好仅存储在本机。
+- 登录后可分别保存鼠标高亮、倒计时背景、番茄时长和侧栏宽度等设置。
+- 倒计时背景默认 50% 透明度；番茄钟开始后同步显示可拖动、可缩放、始终置顶的桌面窗口。
+- 安装程序支持自定义安装目录，后续自动更新继续使用已选择的目录。
+
 ## v1.1.1
 
 ### 界面更新
@@ -40,6 +53,13 @@
 %LOCALAPPDATA%\Toolbox\state.json
 ```
 
+本机账户和头像分别保存在：
+
+```text
+%LOCALAPPDATA%\Toolbox\accounts.json
+%LOCALAPPDATA%\Toolbox\avatars\
+```
+
 图片和 PDF 处理完全在本机完成。应用不会上传这些内容。剪贴板历史只记录文本，单条超过 200,000 字符时跳过，最多保留 100 条。
 
 ## 构建
@@ -73,7 +93,7 @@ powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 
 1. 修改 `Workbench.csproj`、`Installer/Installer.cs`、`Installer/Bootstrapper.cs` 中的版本号。
 2. 运行 `build-installer.ps1`。
-3. 创建同名 Git 标签，例如 `v1.1.1`。
+3. 创建同名 Git 标签，例如 `v1.2.0`。
 4. 将 `WorkbenchSetup.exe` 和 `WorkbenchFullSetup.exe` 上传到该 GitHub Release。
 5. 发布 Release。应用启动时会读取最新 Release 并比较语义版本号。
 
@@ -83,5 +103,6 @@ powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 - 番茄钟的阶段循环参考 Pomotroid；实现代码为本项目独立编写。
 - 桌面便签的独立窗口交互参考 PaperTodo；实现代码为本项目独立编写。
 - PDF 功能使用 `PDFsharp 6.2.4`，MIT License。完整声明见 `THIRD-PARTY-NOTICES.md`。
+- v1.2.0 的导航层级与仪表盘交互参考 [WPF UI](https://github.com/lepoco/wpfui)、[MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit) 和 [TechDashboard](https://github.com/PerryLuoLab/TechDashboard)；实现代码为本项目独立编写，未引入这些 UI 库，以控制程序体积。
 
 未复制或合并 GPL / AGPL 项目的源代码。

@@ -1,8 +1,11 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,6 +20,7 @@ public partial class MainWindow : Window
     private const int HotkeyAnnotation = 1002;
 
     private readonly ToolboxState _state = StateStore.Load();
+    private LocalAccount? _activeAccount;
     private OverlayWindow? _overlay;
     private AnnotationWindow? _annotation;
     private KeyboardDisplayService? _keyboardDisplay;
@@ -27,17 +31,23 @@ public partial class MainWindow : Window
     private Slider? _timerBackgroundOpacity;
     private TextBlock? _timerBackgroundOpacityText;
     private Border? _timerBackgroundPreview;
+    private System.Windows.Threading.DispatcherTimer? _homeClockTimer;
+    private bool _applyingPreferences;
     private bool _checkingForUpdate;
     private bool _isClosing;
 
     public MainWindow()
     {
+        _activeAccount = AccountStore.Find(_state.CurrentAccountId);
         InitializeComponent();
         InitializeFeatureState();
         Loaded += (_, _) =>
         {
             RefreshOrganizerStatus();
             AddTimerBackgroundControls();
+            ApplyPreferences(CurrentPreferences);
+            InitializeHome();
+            UpdateProfileHeader();
             InitializeTrayIcon();
 #if DEBUG
             var capturePath = Environment.GetEnvironmentVariable("TOOLBOX_CAPTURE_PATH");
@@ -50,14 +60,46 @@ public partial class MainWindow : Window
                 }
                 switch (Environment.GetEnvironmentVariable("TOOLBOX_CAPTURE_PAGE")?.ToLowerInvariant())
                 {
-                    case "timer": ShowPage(TimerPage, TimerNav); break;
-                    case "settings": ShowPage(SettingsPage, SettingsNav); break;
-                    case "clipboard": ShowPage(ClipboardPage, ClipboardNav); break;
+                    case "mouse": ShowPage(MousePage, MouseNav, "鼠标高亮"); break;
+                    case "timer": ShowPage(TimerPage, TimerNav, "倒计时"); break;
+                    case "pomodoro": ShowPage(PomodoroPage, PomodoroNav, "番茄钟"); break;
+                    case "notes": ShowPage(NotesPage, NotesNav, "便签 / 待办"); break;
+                    case "rename": ShowPage(RenamePage, RenameNav, "批量重命名"); break;
+                    case "settings": ShowPage(SettingsPage, SettingsNav, "设置与更新"); break;
+                    case "clipboard": ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史"); break;
                 }
                 _ = CaptureAndCloseDebugPreviewAsync(capturePath);
             }
 #endif
         };
+    }
+
+    private ToolboxPreferences CurrentPreferences => _activeAccount?.Preferences ?? _state.GuestPreferences;
+
+    private void InitializeHome()
+    {
+        UpdateHomeClock();
+        UpdateHomeMetrics();
+        _homeClockTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _homeClockTimer.Tick += (_, _) => { UpdateHomeClock(); UpdateHomeMetrics(); };
+        _homeClockTimer.Start();
+    }
+
+    private void UpdateHomeClock()
+    {
+        if (HomeClockText is null) return;
+        var now = DateTime.Now;
+        HomeClockText.Text = now.ToString("HH:mm");
+        var weekdays = new[] { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        HomeDateText.Text = $"{now:M月d日}  {weekdays[(int)now.DayOfWeek]}";
+    }
+
+    private void UpdateHomeMetrics()
+    {
+        if (HomeNotesCount is null) return;
+        HomeNotesCount.Text = $"{_notes.Count(item => !item.IsDone)} 条";
+        HomeClipboardCount.Text = $"{_clipboardEntries.Count} 条";
+        HomeHighlightStatus.Text = _overlay is null ? "未启用" : "已启用";
     }
 
 #if DEBUG
@@ -95,13 +137,13 @@ public partial class MainWindow : Window
         _timerBackgroundPreview = new Border { Width = 34, Height = 24, CornerRadius = new CornerRadius(4), Background = System.Windows.Media.Brushes.White, BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 210, 220)), BorderThickness = new Thickness(1), Margin = new Thickness(10, 0, 22, 0), VerticalAlignment = VerticalAlignment.Center };
         row.Children.Add(_timerBackgroundPreview);
         row.Children.Add(new TextBlock { Text = "不透明度", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 8, 0) });
-        _timerBackgroundOpacity = new Slider { Width = 150, Minimum = 0, Maximum = 100, Value = 0 };
+        _timerBackgroundOpacity = new Slider { Width = 150, Minimum = 0, Maximum = 100, Value = 50 };
         _timerBackgroundOpacity.ValueChanged += TimerBackgroundOpacity_Changed;
         row.Children.Add(_timerBackgroundOpacity);
-        _timerBackgroundOpacityText = new TextBlock { Text = "0%", Width = 42, TextAlignment = TextAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
+        _timerBackgroundOpacityText = new TextBlock { Text = "50%", Width = 42, TextAlignment = TextAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
         row.Children.Add(_timerBackgroundOpacityText);
         TimerBackgroundHost.Children.Add(row);
-        TimerBackgroundHost.Children.Add(new TextBlock { Text = "默认背景完全透明。倒计时结束后继续负计时，并显示红色数字。", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(104, 115, 134)), Margin = new Thickness(4, 10, 0, 0), TextWrapping = TextWrapping.Wrap });
+        TimerBackgroundHost.Children.Add(new TextBlock { Text = "默认背景为 50% 透明度。倒计时结束后继续负计时，并显示红色数字。", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(104, 115, 134)), Margin = new Thickness(4, 10, 0, 0), TextWrapping = TextWrapping.Wrap });
     }
 
     private void Window_SourceInitialized(object? sender, EventArgs e)
@@ -130,10 +172,10 @@ public partial class MainWindow : Window
         return IntPtr.Zero;
     }
 
-    private void ShowPage(UIElement page, System.Windows.Controls.Button nav)
+    private void ShowPage(UIElement page, System.Windows.Controls.Button nav, string title)
     {
-        foreach (var item in new[] { MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
-        foreach (var item in new[] { MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
+        foreach (var item in new[] { HomePage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
+        foreach (var item in new[] { HomeNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
         {
             item.Background = System.Windows.Media.Brushes.Transparent;
             item.BorderBrush = System.Windows.Media.Brushes.Transparent;
@@ -141,18 +183,24 @@ public partial class MainWindow : Window
         page.Visibility = Visibility.Visible;
         nav.Background = (System.Windows.Media.Brush)FindResource("ActiveNavBrush");
         nav.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(88, 216, 255));
+        CurrentPageTitle.Text = title;
+        if (nav == MouseNav) PresentationExpander.IsExpanded = true;
+        else if (nav == TimerNav || nav == PomodoroNav) TimeExpander.IsExpanded = true;
+        else if (nav == ClipboardNav || nav == NotesNav) RecordExpander.IsExpanded = true;
+        else if (nav == OrganizerNav || nav == RenameNav || nav == ImageNav || nav == PdfNav) FileExpander.IsExpanded = true;
     }
 
-    private void MouseNav_Click(object sender, RoutedEventArgs e) => ShowPage(MousePage, MouseNav);
-    private void TimerNav_Click(object sender, RoutedEventArgs e) => ShowPage(TimerPage, TimerNav);
-    private void PomodoroNav_Click(object sender, RoutedEventArgs e) => ShowPage(PomodoroPage, PomodoroNav);
-    private void ClipboardNav_Click(object sender, RoutedEventArgs e) => ShowPage(ClipboardPage, ClipboardNav);
-    private void NotesNav_Click(object sender, RoutedEventArgs e) => ShowPage(NotesPage, NotesNav);
-    private void OrganizerNav_Click(object sender, RoutedEventArgs e) { ShowPage(OrganizerPage, OrganizerNav); RefreshOrganizerStatus(); }
-    private void RenameNav_Click(object sender, RoutedEventArgs e) => ShowPage(RenamePage, RenameNav);
-    private void ImageNav_Click(object sender, RoutedEventArgs e) => ShowPage(ImagePage, ImageNav);
-    private void PdfNav_Click(object sender, RoutedEventArgs e) => ShowPage(PdfPage, PdfNav);
-    private void SettingsNav_Click(object sender, RoutedEventArgs e) => ShowPage(SettingsPage, SettingsNav);
+    private void HomeNav_Click(object sender, RoutedEventArgs e) => ShowPage(HomePage, HomeNav, "首页");
+    private void MouseNav_Click(object sender, RoutedEventArgs e) => ShowPage(MousePage, MouseNav, "鼠标高亮");
+    private void TimerNav_Click(object sender, RoutedEventArgs e) => ShowPage(TimerPage, TimerNav, "倒计时");
+    private void PomodoroNav_Click(object sender, RoutedEventArgs e) => ShowPage(PomodoroPage, PomodoroNav, "番茄钟");
+    private void ClipboardNav_Click(object sender, RoutedEventArgs e) => ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史");
+    private void NotesNav_Click(object sender, RoutedEventArgs e) => ShowPage(NotesPage, NotesNav, "便签 / 待办");
+    private void OrganizerNav_Click(object sender, RoutedEventArgs e) { ShowPage(OrganizerPage, OrganizerNav, "桌面收纳"); RefreshOrganizerStatus(); }
+    private void RenameNav_Click(object sender, RoutedEventArgs e) => ShowPage(RenamePage, RenameNav, "批量重命名");
+    private void ImageNav_Click(object sender, RoutedEventArgs e) => ShowPage(ImagePage, ImageNav, "图片处理");
+    private void PdfNav_Click(object sender, RoutedEventArgs e) => ShowPage(PdfPage, PdfNav, "PDF 工具");
+    private void SettingsNav_Click(object sender, RoutedEventArgs e) => ShowPage(SettingsPage, SettingsNav, "设置与更新");
 
     private void EnableButton_Click(object sender, RoutedEventArgs e) => EnableHighlight();
     private void DisableButton_Click(object sender, RoutedEventArgs e) => DisableHighlight();
@@ -182,6 +230,7 @@ public partial class MainWindow : Window
     {
         if (SizeText is not null && SizeSlider is not null) SizeText.Text = $"{(int)SizeSlider.Value} px";
         ApplyOverlaySettings();
+        if (!_applyingPreferences) ScheduleStateSave();
     }
 
     private void ApplyOverlaySettings()
@@ -198,12 +247,14 @@ public partial class MainWindow : Window
         ColorPreview.Background = new SolidColorBrush(_selectedColor);
         ColorHexText.Text = $"#{_selectedColor.R:X2}{_selectedColor.G:X2}{_selectedColor.B:X2}";
         ApplyOverlaySettings();
+        ScheduleStateSave();
     }
 
     private void KeyboardCheck_Changed(object sender, RoutedEventArgs e)
     {
         if (KeyboardCheck.IsChecked == true) { _keyboardDisplay ??= new KeyboardDisplayService(); _keyboardDisplay.Start(); }
         else { _keyboardDisplay?.Dispose(); _keyboardDisplay = null; }
+        if (!_applyingPreferences) ScheduleStateSave();
     }
 
     private bool TryReadTime(out int totalSeconds)
@@ -229,7 +280,13 @@ public partial class MainWindow : Window
         return window;
     }
 
-    private void ToggleTimer_Click(object sender, RoutedEventArgs e) { _countdown ??= CreateCountdownWindow(); if (!_countdown.IsVisible) _countdown.Show(); _countdown.Toggle(); }
+    private void ToggleTimer_Click(object sender, RoutedEventArgs e)
+    {
+        _countdown ??= CreateCountdownWindow();
+        ApplyTimerBackground();
+        if (!_countdown.IsVisible) _countdown.Show();
+        _countdown.Toggle();
+    }
     private void ResetTimer_Click(object sender, RoutedEventArgs e) => _countdown?.Reset();
 
     private void TimerBackgroundButton_Click(object sender, RoutedEventArgs e)
@@ -239,12 +296,14 @@ public partial class MainWindow : Window
         _timerBackgroundColor = System.Windows.Media.Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B);
         if (_timerBackgroundPreview is not null) _timerBackgroundPreview.Background = new SolidColorBrush(_timerBackgroundColor);
         ApplyTimerBackground();
+        ScheduleStateSave();
     }
 
     private void TimerBackgroundOpacity_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (_timerBackgroundOpacityText is not null) _timerBackgroundOpacityText.Text = $"{(int)e.NewValue}%";
         ApplyTimerBackground();
+        if (!_applyingPreferences) ScheduleStateSave();
     }
 
     private void ApplyTimerBackground() => _countdown?.SetBackground(_timerBackgroundColor, (_timerBackgroundOpacity?.Value ?? 0) / 100.0);
@@ -330,6 +389,137 @@ public partial class MainWindow : Window
         StatusText.Text = enabled ? "当前状态：已启用" : "当前状态：未启用";
         StatusDot.Fill = new SolidColorBrush(enabled ? System.Windows.Media.Color.FromRgb(52, 168, 83) : System.Windows.Media.Color.FromRgb(154, 160, 166));
         EnableButton.IsEnabled = !enabled; DisableButton.IsEnabled = enabled;
+        if (HomeHighlightStatus is not null) HomeHighlightStatus.Text = enabled ? "已启用" : "未启用";
+    }
+
+    private void SidebarSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
+    {
+        CurrentPreferences.SidebarWidth = SidebarColumn.ActualWidth;
+        ScheduleStateSave();
+    }
+
+    private void ProfileButton_Click(object sender, RoutedEventArgs e)
+    {
+        SaveStateNow();
+        var dialog = new AccountWindow(_activeAccount) { Owner = this };
+        if (dialog.ShowDialog() != true) return;
+        if (dialog.LoggedOut)
+        {
+            _activeAccount = null;
+            _state.CurrentAccountId = null;
+            ApplyPreferences(_state.GuestPreferences);
+        }
+        else if (dialog.SignedInAccount is not null)
+        {
+            _activeAccount = dialog.SignedInAccount;
+            _state.CurrentAccountId = _activeAccount.Id;
+            ApplyPreferences(_activeAccount.Preferences);
+        }
+        UpdateProfileHeader();
+        SaveStateNow();
+    }
+
+    private void UpdateProfileHeader()
+    {
+        var name = _activeAccount?.DisplayName;
+        ProfileNameText.Text = string.IsNullOrWhiteSpace(name) ? "登录 / 注册" : name;
+        ProfileHintText.Text = _activeAccount is null ? "本机账户 · 可选" : "个人中心 · 本机保存";
+        ProfileInitialText.Text = string.IsNullOrWhiteSpace(name) ? "登" : name.Trim()[0].ToString();
+        ProfileInitialText.Visibility = Visibility.Visible;
+        ProfileAvatarShape.Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 234, 255));
+        if (string.IsNullOrWhiteSpace(_activeAccount?.AvatarPath) || !File.Exists(_activeAccount.AvatarPath)) return;
+        try
+        {
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.UriSource = new Uri(_activeAccount.AvatarPath, UriKind.Absolute);
+            image.EndInit();
+            ProfileAvatarShape.Fill = new ImageBrush(image) { Stretch = Stretch.UniformToFill };
+            ProfileInitialText.Visibility = Visibility.Collapsed;
+        }
+        catch { }
+    }
+
+    private void ApplyPreferences(ToolboxPreferences preferences)
+    {
+        _applyingPreferences = true;
+        try
+        {
+            SidebarColumn.Width = new GridLength(Math.Clamp(preferences.SidebarWidth, SidebarColumn.MinWidth, SidebarColumn.MaxWidth));
+            ThemeBox.SelectedIndex = Math.Clamp(preferences.HighlightTheme, 0, ThemeBox.Items.Count - 1);
+            ShapeBox.SelectedIndex = Math.Clamp(preferences.HighlightShape, 0, ShapeBox.Items.Count - 1);
+            PositionBox.SelectedIndex = Math.Clamp(preferences.HighlightPosition, 0, PositionBox.Items.Count - 1);
+            SizeSlider.Value = Math.Clamp(preferences.HighlightSize, (int)SizeSlider.Minimum, (int)SizeSlider.Maximum);
+            try { _selectedColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(preferences.HighlightColor); }
+            catch { _selectedColor = Colors.Red; }
+            ColorPreview.Background = new SolidColorBrush(_selectedColor);
+            ColorHexText.Text = $"#{_selectedColor.R:X2}{_selectedColor.G:X2}{_selectedColor.B:X2}";
+            DynamicCheck.IsChecked = preferences.DynamicHighlight;
+            KeyboardCheck.IsChecked = preferences.KeyboardDisplay;
+            try { _timerBackgroundColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(preferences.TimerBackgroundColor); }
+            catch { _timerBackgroundColor = Colors.White; }
+            if (_timerBackgroundPreview is not null) _timerBackgroundPreview.Background = new SolidColorBrush(_timerBackgroundColor);
+            if (_timerBackgroundOpacity is not null) _timerBackgroundOpacity.Value = Math.Clamp(preferences.TimerBackgroundOpacity, 0, 100);
+            PomodoroWorkMinutes.Text = preferences.PomodoroWorkMinutes.ToString();
+            PomodoroShortMinutes.Text = preferences.PomodoroShortMinutes.ToString();
+            PomodoroLongMinutes.Text = preferences.PomodoroLongMinutes.ToString();
+            PomodoroRoundCount.Text = preferences.PomodoroRounds.ToString();
+            ApplyOverlaySettings();
+            ApplyTimerBackground();
+        }
+        finally { _applyingPreferences = false; }
+    }
+
+    private void CapturePreferences()
+    {
+        var preferences = CurrentPreferences;
+        preferences.SidebarWidth = Math.Clamp(SidebarColumn.ActualWidth, SidebarColumn.MinWidth, SidebarColumn.MaxWidth);
+        preferences.HighlightTheme = ThemeBox.SelectedIndex;
+        preferences.HighlightShape = ShapeBox.SelectedIndex;
+        preferences.HighlightPosition = PositionBox.SelectedIndex;
+        preferences.HighlightSize = (int)SizeSlider.Value;
+        preferences.HighlightColor = $"#{_selectedColor.R:X2}{_selectedColor.G:X2}{_selectedColor.B:X2}";
+        preferences.DynamicHighlight = DynamicCheck.IsChecked == true;
+        preferences.KeyboardDisplay = KeyboardCheck.IsChecked == true;
+        preferences.TimerBackgroundOpacity = (int)(_timerBackgroundOpacity?.Value ?? 50);
+        preferences.TimerBackgroundColor = $"#{_timerBackgroundColor.R:X2}{_timerBackgroundColor.G:X2}{_timerBackgroundColor.B:X2}";
+        preferences.PomodoroWorkMinutes = ReadPositive(PomodoroWorkMinutes.Text, 25, 1, 240);
+        preferences.PomodoroShortMinutes = ReadPositive(PomodoroShortMinutes.Text, 5, 1, 120);
+        preferences.PomodoroLongMinutes = ReadPositive(PomodoroLongMinutes.Text, 15, 1, 180);
+        preferences.PomodoroRounds = ReadPositive(PomodoroRoundCount.Text, 4, 1, 12);
+        if (_activeAccount is not null) AccountStore.Save(_activeAccount);
+    }
+
+    private void HomeSearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == System.Windows.Input.Key.Enter) { OpenHomeSearch(); e.Handled = true; }
+    }
+
+    private void SearchButton_Click(object sender, RoutedEventArgs e) => OpenHomeSearch();
+
+    private void HomeSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (HomeSearchPlaceholder is not null) HomeSearchPlaceholder.Visibility = string.IsNullOrEmpty(HomeSearchBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void HomeStartPomodoro_Click(object sender, RoutedEventArgs e)
+    {
+        ShowPage(PomodoroPage, PomodoroNav, "番茄钟");
+        if (!_pomodoroRunning) PomodoroStart_Click(sender, e);
+        else ShowPomodoroWindow();
+    }
+
+    private void OpenHomeSearch()
+    {
+        var text = HomeSearchBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(text)) return;
+        string url;
+        if (Uri.TryCreate(text, UriKind.Absolute, out var direct) && direct.Scheme is "http" or "https") url = direct.AbsoluteUri;
+        else if (!text.Contains(' ') && text.Contains('.')) url = "https://" + text;
+        else url = "https://www.baidu.com/s?wd=" + Uri.EscapeDataString(text);
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+        catch (Exception ex) { System.Windows.MessageBox.Show("无法打开浏览器：" + ex.Message, "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void DisableHighlight()
