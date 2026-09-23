@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using System.Windows;
 
@@ -5,11 +6,18 @@ namespace Workbench;
 
 public partial class App : System.Windows.Application
 {
+#if DEBUG
+    private const string MutexName = "Local\\Workbench_DEV_5DE4AD7B_1647_48C5_87E0_9013F7C68BB9";
+#else
     private const string MutexName = "Local\\Workbench_5DE4AD7B_1647_48C5_87E0_9013F7C68BB9";
+#endif
     private Mutex? _singleInstanceMutex;
 
     protected override void OnStartup(StartupEventArgs e)
     {
+#if DEBUG
+        Environment.SetEnvironmentVariable("TOOLBOX_STATE_DIR", Path.Combine(Path.GetTempPath(), "WorkbenchUiPreview"));
+#endif
         _singleInstanceMutex = new Mutex(true, MutexName, out bool createdNew);
         if (!createdNew)
         {

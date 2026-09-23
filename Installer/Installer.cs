@@ -7,6 +7,12 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
+[assembly: AssemblyTitle("工具箱安装程序")]
+[assembly: AssemblyProduct("工具箱")]
+[assembly: AssemblyVersion("1.1.1.0")]
+[assembly: AssemblyFileVersion("1.1.1.0")]
+[assembly: AssemblyInformationalVersion("1.1.1")]
+
 internal static class WorkbenchInstaller
 {
     static readonly string InstallDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Workbench");
@@ -45,7 +51,7 @@ internal static class WorkbenchInstaller
             TryDelete(LegacyDesktopShortcut);
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench"))
             {
-                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.1.0"); key.SetValue("Publisher", "Toolbox");
+                key.SetValue("DisplayName", "工具箱"); key.SetValue("DisplayVersion", "1.1.1"); key.SetValue("Publisher", "Toolbox");
                 key.SetValue("DisplayIcon", AppPath); key.SetValue("UninstallString", "\"" + UninstallPath + "\" /uninstall");
                 key.SetValue("InstallLocation", InstallDir); key.SetValue("NoModify", 1); key.SetValue("NoRepair", 1);
             }

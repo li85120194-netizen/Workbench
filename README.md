@@ -2,6 +2,15 @@
 
 工具箱是一款面向 Windows 10/11 的轻量桌面效率应用。它把演示辅助、计时、便签、文件整理、图片处理和 PDF 工具整合在同一个原生 WPF 应用中，安装后可通过桌面快捷方式或系统托盘使用。
 
+## v1.1.1
+
+### 界面更新
+
+- 全面重做主窗口：深蓝侧栏、浅色内容区、自定义标题栏和统一的圆角卡片布局。
+- 鼠标高亮页采用更清晰的状态操作区与外观设置区，快捷键、大小、位置、颜色和主题集中展示。
+- 输入框、下拉框、滑杆和操作按钮统一为现代蓝色视觉，并补充完整的悬停、禁用和选中状态。
+- 倒计时、番茄钟、剪贴板、便签、文件处理、PDF 与设置页面同步更新，功能和本地数据保持兼容。
+
 ## v1.1.0
 
 ### 新增功能
@@ -64,7 +73,7 @@ powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 
 1. 修改 `Workbench.csproj`、`Installer/Installer.cs`、`Installer/Bootstrapper.cs` 中的版本号。
 2. 运行 `build-installer.ps1`。
-3. 创建同名 Git 标签，例如 `v1.1.0`。
+3. 创建同名 Git 标签，例如 `v1.1.1`。
 4. 将 `WorkbenchSetup.exe` 和 `WorkbenchFullSetup.exe` 上传到该 GitHub Release。
 5. 发布 Release。应用启动时会读取最新 Release 并比较语义版本号。
 

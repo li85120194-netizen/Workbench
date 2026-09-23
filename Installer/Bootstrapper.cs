@@ -4,14 +4,21 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 
+[assembly: AssemblyTitle("工具箱在线安装程序")]
+[assembly: AssemblyProduct("工具箱")]
+[assembly: AssemblyVersion("1.1.1.0")]
+[assembly: AssemblyFileVersion("1.1.1.0")]
+[assembly: AssemblyInformationalVersion("1.1.1")]
+
 internal static class WorkbenchBootstrapper
 {
-    const string Version = "1.1.0";
-    const string OriginUrl = "https://github.com/li85120194-netizen/Workbench/releases/download/v1.1.0/WorkbenchFullSetup.exe";
+    const string Version = "1.1.1";
+    const string OriginUrl = "https://github.com/li85120194-netizen/Workbench/releases/download/v1.1.1/WorkbenchFullSetup.exe";
     static long ExpectedSize;
     static string ExpectedSha256;
 

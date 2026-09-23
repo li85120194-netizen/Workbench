@@ -1,9 +1,11 @@
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Workbench;
 
@@ -37,14 +39,57 @@ public partial class MainWindow : Window
             RefreshOrganizerStatus();
             AddTimerBackgroundControls();
             InitializeTrayIcon();
+#if DEBUG
+            var capturePath = Environment.GetEnvironmentVariable("TOOLBOX_CAPTURE_PATH");
+            if (!string.IsNullOrWhiteSpace(capturePath))
+            {
+                if (Environment.GetEnvironmentVariable("TOOLBOX_CAPTURE_SIZE")?.Equals("compact", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    Width = MinWidth;
+                    Height = MinHeight;
+                }
+                switch (Environment.GetEnvironmentVariable("TOOLBOX_CAPTURE_PAGE")?.ToLowerInvariant())
+                {
+                    case "timer": ShowPage(TimerPage, TimerNav); break;
+                    case "settings": ShowPage(SettingsPage, SettingsNav); break;
+                    case "clipboard": ShowPage(ClipboardPage, ClipboardNav); break;
+                }
+                _ = CaptureAndCloseDebugPreviewAsync(capturePath);
+            }
+#endif
         };
     }
+
+#if DEBUG
+    private async Task CaptureAndCloseDebugPreviewAsync(string path)
+    {
+        await Task.Delay(450);
+        CaptureDebugScreenshot(path);
+        Close();
+    }
+
+    private void CaptureDebugScreenshot(string path)
+    {
+        UpdateLayout();
+        var dpi = VisualTreeHelper.GetDpi(this);
+        var pixelWidth = Math.Max(1, (int)Math.Round(ActualWidth * dpi.DpiScaleX));
+        var pixelHeight = Math.Max(1, (int)Math.Round(ActualHeight * dpi.DpiScaleY));
+        var bitmap = new RenderTargetBitmap(pixelWidth, pixelHeight, 96 * dpi.DpiScaleX, 96 * dpi.DpiScaleY, PixelFormats.Pbgra32);
+        bitmap.Render(this);
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        using var stream = File.Create(path);
+        encoder.Save(stream);
+    }
+#endif
 
     private void AddTimerBackgroundControls()
     {
         var row = new StackPanel { Orientation = System.Windows.Controls.Orientation.Horizontal, Margin = new Thickness(4, 14, 0, 0) };
         row.Children.Add(new TextBlock { Text = "背景", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) });
-        var colorButton = new System.Windows.Controls.Button { Content = "选择颜色…", Height = 32, Padding = new Thickness(14, 0, 14, 0) };
+        var colorButton = new System.Windows.Controls.Button { Content = "选择颜色…" };
+        colorButton.SetResourceReference(FrameworkElement.StyleProperty, "ActionButton");
         colorButton.Click += TimerBackgroundButton_Click;
         row.Children.Add(colorButton);
         _timerBackgroundPreview = new Border { Width = 34, Height = 24, CornerRadius = new CornerRadius(4), Background = System.Windows.Media.Brushes.White, BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 210, 220)), BorderThickness = new Thickness(1), Margin = new Thickness(10, 0, 22, 0), VerticalAlignment = VerticalAlignment.Center };
@@ -55,8 +100,8 @@ public partial class MainWindow : Window
         row.Children.Add(_timerBackgroundOpacity);
         _timerBackgroundOpacityText = new TextBlock { Text = "0%", Width = 42, TextAlignment = TextAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
         row.Children.Add(_timerBackgroundOpacityText);
-        TimerPanel.Children.Add(row);
-        TimerPanel.Children.Add(new TextBlock { Text = "默认背景完全透明。倒计时结束后继续负计时，并显示红色数字。", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(104, 115, 134)), Margin = new Thickness(4, 10, 0, 0), TextWrapping = TextWrapping.Wrap });
+        TimerBackgroundHost.Children.Add(row);
+        TimerBackgroundHost.Children.Add(new TextBlock { Text = "默认背景完全透明。倒计时结束后继续负计时，并显示红色数字。", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(104, 115, 134)), Margin = new Thickness(4, 10, 0, 0), TextWrapping = TextWrapping.Wrap });
     }
 
     private void Window_SourceInitialized(object? sender, EventArgs e)
@@ -88,9 +133,14 @@ public partial class MainWindow : Window
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav)
     {
         foreach (var item in new[] { MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
-        foreach (var item in new[] { MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) item.Background = System.Windows.Media.Brushes.Transparent;
+        foreach (var item in new[] { MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
+        {
+            item.Background = System.Windows.Media.Brushes.Transparent;
+            item.BorderBrush = System.Windows.Media.Brushes.Transparent;
+        }
         page.Visibility = Visibility.Visible;
-        nav.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(43, 56, 84));
+        nav.Background = (System.Windows.Media.Brush)FindResource("ActiveNavBrush");
+        nav.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(88, 216, 255));
     }
 
     private void MouseNav_Click(object sender, RoutedEventArgs e) => ShowPage(MousePage, MouseNav);
@@ -145,7 +195,9 @@ public partial class MainWindow : Window
         using var dialog = new System.Windows.Forms.ColorDialog { FullOpen = true, Color = System.Drawing.Color.FromArgb(_selectedColor.R, _selectedColor.G, _selectedColor.B) };
         if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
         _selectedColor = System.Windows.Media.Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B);
-        ColorPreview.Background = new SolidColorBrush(_selectedColor); ApplyOverlaySettings();
+        ColorPreview.Background = new SolidColorBrush(_selectedColor);
+        ColorHexText.Text = $"#{_selectedColor.R:X2}{_selectedColor.G:X2}{_selectedColor.B:X2}";
+        ApplyOverlaySettings();
     }
 
     private void KeyboardCheck_Changed(object sender, RoutedEventArgs e)
@@ -287,12 +339,33 @@ public partial class MainWindow : Window
 
     private void Window_StateChanged(object? sender, EventArgs e)
     {
+        if (WindowBorder is not null)
+        {
+            WindowBorder.CornerRadius = WindowState == WindowState.Maximized ? new CornerRadius(0) : new CornerRadius(16);
+        }
+        if (SidebarBorder is not null)
+        {
+            SidebarBorder.CornerRadius = WindowState == WindowState.Maximized ? new CornerRadius(0) : new CornerRadius(15, 0, 0, 15);
+        }
+        if (MaximizeButton is not null)
+        {
+            MaximizeButton.Content = WindowState == WindowState.Maximized ? "❐" : "□";
+        }
         if (WindowState == WindowState.Minimized && MinimizeToTrayCheck.IsChecked == true)
         {
             Hide();
             ShowTrayHintOnce();
         }
     }
+
+    private void MinimizeWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void MaximizeWindow_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+
+    private void CloseWindow_Click(object sender, RoutedEventArgs e) => Close();
 
     private void Window_Closing(object? sender, CancelEventArgs e)
     {
