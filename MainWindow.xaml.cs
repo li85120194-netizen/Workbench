@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private const int WmClipboardUpdate = 0x031D;
     private const int HotkeyHighlight = 1001;
     private const int HotkeyAnnotation = 1002;
+    private const int HotkeyLauncher = 1003;
 
     private readonly ToolboxState _state = StateStore.Load();
     private LocalAccount? _activeAccount;
@@ -25,6 +26,7 @@ public partial class MainWindow : Window
     private AnnotationWindow? _annotation;
     private KeyboardDisplayService? _keyboardDisplay;
     private CountdownWindow? _countdown;
+    private LauncherWindow? _launcher;
     private HwndSource? _source;
     private System.Windows.Media.Color _selectedColor = Colors.Red;
     private System.Windows.Media.Color _timerBackgroundColor = Colors.White;
@@ -156,6 +158,7 @@ public partial class MainWindow : Window
         _source.AddHook(WindowMessageHook);
         RegisterHotKey(handle, HotkeyHighlight, 0x4000, 0x70);
         RegisterHotKey(handle, HotkeyAnnotation, 0x4000, 0x71);
+        RegisterHotKey(handle, HotkeyLauncher, 0x0001, 0x20);
         AddClipboardFormatListener(handle);
         if (AutoUpdateCheck.IsChecked == true) _ = CheckForUpdatesAsync(false);
     }
@@ -166,6 +169,7 @@ public partial class MainWindow : Window
         {
             if (wParam.ToInt32() == HotkeyHighlight) ToggleHighlight();
             else if (wParam.ToInt32() == HotkeyAnnotation) ToggleAnnotation();
+            else if (wParam.ToInt32() == HotkeyLauncher) ShowLauncher();
             handled = true;
         }
         else if (message == WmClipboardUpdate)
@@ -178,7 +182,7 @@ public partial class MainWindow : Window
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav, string title)
     {
         EnsureTab(page, nav, title);
-        foreach (var item in new[] { HomePage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
+        foreach (var item in new UIElement[] { HomePage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
         foreach (var item in new[] { HomeNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
         {
             item.Background = System.Windows.Media.Brushes.Transparent;
@@ -191,9 +195,9 @@ public partial class MainWindow : Window
         CurrentPageTitle.Text = title;
         UpdateTabStyles();
         if (nav == MouseNav) PresentationExpander.IsExpanded = true;
-        else if (nav == TimerNav || nav == PomodoroNav) TimeExpander.IsExpanded = true;
-        else if (nav == ClipboardNav || nav == NotesNav) RecordExpander.IsExpanded = true;
-        else if (nav == OrganizerNav || nav == RenameNav || nav == ImageNav || nav == PdfNav) FileExpander.IsExpanded = true;
+        else if (nav == TimerNav || nav == PomodoroNav) PresentationExpander.IsExpanded = true;
+        else if (nav == ClipboardNav || nav == NotesNav) PresentationExpander.IsExpanded = true;
+        else if (nav == OrganizerNav || nav == RenameNav || nav == ImageNav || nav == PdfNav) PresentationExpander.IsExpanded = true;
     }
 
     private void EnsureTab(UIElement page, System.Windows.Controls.Button nav, string title)
@@ -262,7 +266,34 @@ public partial class MainWindow : Window
     private void ImageNav_Click(object sender, RoutedEventArgs e) => ShowPage(ImagePage, ImageNav, "图片处理");
     private void PdfNav_Click(object sender, RoutedEventArgs e) => ShowPage(PdfPage, PdfNav, "PDF 工具");
     private void SettingsNav_Click(object sender, RoutedEventArgs e) => ShowPage(SettingsPage, SettingsNav, "设置与更新");
+    private void OperationsNav_Click(object sender, RoutedEventArgs e) => new IndustryWindow { Owner = this }.ShowDialog();
+    private void OperationsAdminNav_Click(object sender, RoutedEventArgs e) => new OperationsWindow { Owner = this }.ShowDialog();
+    private void ShowLauncher()
+    {
+        _launcher ??= new LauncherWindow(OpenToolFromLauncher);
+        _launcher.OpenLauncher();
+    }
 
+    private void OpenToolFromLauncher(string id)
+    {
+        if (!IsVisible) Show();
+        if (WindowState == WindowState.Minimized) WindowState = WindowState.Normal;
+        Activate();
+        switch (id)
+        {
+            case "home": ShowPage(HomePage, HomeNav, "首页"); break;
+            case "mouse": ShowPage(MousePage, MouseNav, "鼠标高亮"); break;
+            case "timer": ShowPage(TimerPage, TimerNav, "倒计时"); break;
+            case "pomodoro": ShowPage(PomodoroPage, PomodoroNav, "番茄钟"); break;
+            case "clipboard": ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史"); break;
+            case "notes": ShowPage(NotesPage, NotesNav, "便签 / 待办"); break;
+            case "organizer": ShowPage(OrganizerPage, OrganizerNav, "桌面收纳"); RefreshOrganizerStatus(); break;
+            case "rename": ShowPage(RenamePage, RenameNav, "批量重命名"); break;
+            case "image": ShowPage(ImagePage, ImageNav, "图片处理"); break;
+            case "pdf": ShowPage(PdfPage, PdfNav, "PDF 工具"); break;
+            case "settings": ShowPage(SettingsPage, SettingsNav, "设置与更新"); break;
+        }
+    }
     private void EnableButton_Click(object sender, RoutedEventArgs e) => EnableHighlight();
     private void DisableButton_Click(object sender, RoutedEventArgs e) => DisableHighlight();
     private void AnnotationButton_Click(object sender, RoutedEventArgs e) => ToggleAnnotation();
@@ -575,6 +606,30 @@ public partial class MainWindow : Window
     {
         var text = HomeSearchBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(text)) return;
+
+        var keyword = text.ToLowerInvariant();
+        var tools = new (string[] Keywords, UIElement Page, System.Windows.Controls.Button Nav, string Title)[]
+        {
+            (new[] { "鼠标", "高亮", "标注", "mouse" }, MousePage, MouseNav, "鼠标高亮"),
+            (new[] { "倒计时", "计时器", "timer" }, TimerPage, TimerNav, "倒计时"),
+            (new[] { "番茄", "专注", "pomodoro" }, PomodoroPage, PomodoroNav, "番茄钟"),
+            (new[] { "剪贴板", "复制", "clipboard" }, ClipboardPage, ClipboardNav, "剪贴板历史"),
+            (new[] { "便签", "待办", "note", "todo" }, NotesPage, NotesNav, "便签 / 待办"),
+            (new[] { "桌面", "收纳", "整理", "organize" }, OrganizerPage, OrganizerNav, "桌面收纳"),
+            (new[] { "重命名", "rename" }, RenamePage, RenameNav, "批量重命名"),
+            (new[] { "图片", "压缩", "转换", "image" }, ImagePage, ImageNav, "图片处理"),
+            (new[] { "pdf", "合并", "拆分", "旋转" }, PdfPage, PdfNav, "PDF 工具"),
+            (new[] { "设置", "更新", "setting", "update" }, SettingsPage, SettingsNav, "设置与更新")
+        };
+
+        var matched = tools.FirstOrDefault(tool => tool.Keywords.Any(item => keyword.Contains(item)));
+        if (matched.Page is not null)
+        {
+            ShowPage(matched.Page, matched.Nav, matched.Title);
+            HomeSearchBox.Clear();
+            return;
+        }
+
         string url;
         if (Uri.TryCreate(text, UriKind.Absolute, out var direct) && direct.Scheme is "http" or "https") url = direct.AbsoluteUri;
         else if (!text.Contains(' ') && text.Contains('.')) url = "https://" + text;
@@ -629,6 +684,7 @@ public partial class MainWindow : Window
         {
             UnregisterHotKey(handle, HotkeyHighlight);
             UnregisterHotKey(handle, HotkeyAnnotation);
+            UnregisterHotKey(handle, HotkeyLauncher);
             RemoveClipboardFormatListener(handle);
         }
         _source?.RemoveHook(WindowMessageHook);

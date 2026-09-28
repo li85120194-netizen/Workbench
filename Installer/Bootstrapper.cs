@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -7,18 +9,19 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 [assembly: AssemblyTitle("工具箱在线安装程序")]
 [assembly: AssemblyProduct("工具箱")]
-[assembly: AssemblyVersion("1.2.1.0")]
-[assembly: AssemblyFileVersion("1.2.1.0")]
-[assembly: AssemblyInformationalVersion("1.2.1")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
+[assembly: AssemblyInformationalVersion("1.3.0")]
 
 internal static class WorkbenchBootstrapper
 {
-    const string Version = "1.2.1";
-    const string OriginUrl = "https://github.com/li85120194-netizen/Workbench/releases/download/v1.2.1/WorkbenchFullSetup.exe";
+    static string Version = "0.0.0";
+    static string OriginUrl = string.Empty;
     static long ExpectedSize;
     static string ExpectedSha256;
 
@@ -46,19 +49,19 @@ internal static class WorkbenchBootstrapper
         using (var reader = new StreamReader(stream))
         {
             string[] values = reader.ReadToEnd().Trim().Split('|');
-            if (values.Length != 2 || !long.TryParse(values[0], out ExpectedSize) || values[1].Length != 64)
+            if (values.Length != 3 || !long.TryParse(values[0], out ExpectedSize) || values[1].Length != 64 || string.IsNullOrWhiteSpace(values[2]))
                 throw new InvalidDataException("无法读取完整安装包校验信息。");
             ExpectedSha256 = values[1];
+            Version = values[2];
+            OriginUrl = "https://github.com/li85120194-netizen/Workbench/releases/download/v" + Version + "/WorkbenchFullSetup.exe.part";
         }
     }
 
     sealed class UpdateForm : Form
     {
         const int SegmentCount = 4;
-        static readonly string ProxyCom = "https://gh-proxy.com/" + OriginUrl;
-        static readonly string ProxyOrg = "https://gh-proxy.org/" + OriginUrl;
-        static readonly string GhFast = "https://ghfast.top/" + OriginUrl;
-        static readonly string GhProxyNet = "https://ghproxy.net/" + OriginUrl;
+        readonly Label sourceHint = new Label();
+        string[] preferredSources = new string[0];
 
         readonly Label status = new Label();
         readonly Label amount = new Label();
@@ -121,7 +124,10 @@ internal static class WorkbenchBootstrapper
             elapsed.Text = "00:00";
             remaining.Text = "计算中…";
 
-            var sourceHint = new Label { Text = "四路并行下载 · 失败自动换线 · 完成后校验 SHA-256", AutoSize = true, Location = new Point(32, 266), ForeColor = Color.FromArgb(22, 119, 255) };
+            sourceHint.Text = "正在测速可用下载线路…";
+            sourceHint.AutoSize = true;
+            sourceHint.Location = new Point(32, 266);
+            sourceHint.ForeColor = Color.FromArgb(22, 119, 255);
             var hint = new Label { Text = "下载完成后将自动安装，并重新打开工具箱。", AutoSize = true, Location = new Point(32, 304), ForeColor = Color.FromArgb(104, 115, 134) };
             cancel.Text = "取消更新";
             cancel.Size = new Size(96, 34);
@@ -171,28 +177,37 @@ internal static class WorkbenchBootstrapper
             foreach (string url in GetSources(index))
             {
                 if (stopRequested) return;
-                long written = 0;
                 try
                 {
+                    long written = File.Exists(partPath) ? new FileInfo(partPath).Length : 0;
+                    if (written > expectedLength) { TryDelete(partPath); written = 0; }
+                    if (written == expectedLength)
+                    {
+                        if (Interlocked.Increment(ref completedSegments) == SegmentCount) SignalCompletion(true, null);
+                        return;
+                    }
+
+                    long requestStart = written;
+                    long requestEnd = expectedLength - 1;
                     var request = (HttpWebRequest)WebRequest.Create(url);
                     request.Method = "GET";
                     request.UserAgent = "Workbench-Bootstrapper/" + Version;
-                    request.Timeout = 15000;
-                    request.ReadWriteTimeout = 20000;
-                    request.KeepAlive = false;
-                    request.AddRange(start, end);
+                    request.Timeout = 12000;
+                    request.ReadWriteTimeout = 25000;
+                    request.KeepAlive = true;
+                    request.AddRange(requestStart, requestEnd);
 
                     using (var response = (HttpWebResponse)request.GetResponse())
                     {
                         string contentRange = response.Headers["Content-Range"];
-                        string expectedPrefix = "bytes " + start + "-";
+                        string expectedPrefix = "bytes " + requestStart + "-";
                         if (response.StatusCode != HttpStatusCode.PartialContent || string.IsNullOrEmpty(contentRange) || !contentRange.StartsWith(expectedPrefix, StringComparison.OrdinalIgnoreCase))
                             throw new InvalidDataException("下载线路不支持可靠的分段传输。");
 
                         using (var input = response.GetResponseStream())
-                        using (var output = new FileStream(partPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        using (var output = new FileStream(partPath, FileMode.Append, FileAccess.Write, FileShare.None))
                         {
-                            var buffer = new byte[128 * 1024];
+                            var buffer = new byte[256 * 1024];
                             while (written < expectedLength)
                             {
                                 if (stopRequested) throw new OperationCanceledException();
@@ -213,8 +228,6 @@ internal static class WorkbenchBootstrapper
                 catch (Exception ex)
                 {
                     lastError = ex;
-                    if (written > 0) Interlocked.Add(ref receivedBytes, -written);
-                    TryDelete(partPath);
                     if (stopRequested) return;
                 }
             }
@@ -223,12 +236,85 @@ internal static class WorkbenchBootstrapper
             SignalCompletion(false, lastError ?? new WebException("所有下载线路均不可用。"));
         }
 
+        string[] GetAllSources(int segment)
+        {
+            string segmentUrl = OriginUrl + segment;
+            return new[]
+            {
+                segmentUrl,
+                "https://gh-proxy.com/" + segmentUrl,
+                "https://gh-proxy.org/" + segmentUrl,
+                "https://ghfast.top/" + segmentUrl,
+                "https://ghproxy.net/" + segmentUrl
+            };
+        }
+
+        string[] ProbeSources()
+        {
+            string[] sources = GetAllSources(0);
+            var tasks = new Task<SourceProbe>[sources.Length];
+            for (int i = 0; i < sources.Length; i++)
+            {
+                string source = sources[i];
+                tasks[i] = Task.Factory.StartNew(() => ProbeSource(source));
+            }
+
+            try { Task.WaitAll(tasks, 8000); } catch { }
+            var results = new List<SourceProbe>();
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                if (tasks[i].Status == TaskStatus.RanToCompletion && tasks[i].Result != null) results.Add(tasks[i].Result);
+            }
+            results.Sort((left, right) => right.BytesPerSecond.CompareTo(left.BytesPerSecond));
+            return results.Select(item => item.Url).ToArray();
+        }
+
+        SourceProbe ProbeSource(string url)
+        {
+            try
+            {
+                var watch = Stopwatch.StartNew();
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                request.UserAgent = "Workbench-Bootstrapper/" + Version;
+                request.Timeout = 7000;
+                request.ReadWriteTimeout = 7000;
+                request.AddRange(0, 131071);
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    string contentRange = response.Headers["Content-Range"];
+                    if (response.StatusCode != HttpStatusCode.PartialContent || string.IsNullOrEmpty(contentRange) || !contentRange.StartsWith("bytes 0-", StringComparison.OrdinalIgnoreCase)) return null;
+                    using (var stream = response.GetResponseStream())
+                    {
+                        var buffer = new byte[131072];
+                        int total = 0;
+                        while (total < buffer.Length)
+                        {
+                            int read = stream.Read(buffer, total, buffer.Length - total);
+                            if (read <= 0) break;
+                            total += read;
+                        }
+                        if (total < 32768) return null;
+                        return new SourceProbe(url, total / Math.Max(0.01, watch.Elapsed.TotalSeconds));
+                    }
+                }
+            }
+            catch { return null; }
+        }
+
         string[] GetSources(int segment)
         {
-            if (segment == 0) return new[] { ProxyCom, ProxyOrg, GhFast, GhProxyNet, OriginUrl };
-            if (segment == 1) return new[] { ProxyOrg, GhFast, ProxyCom, GhProxyNet, OriginUrl };
-            if (segment == 2) return new[] { GhFast, ProxyCom, ProxyOrg, GhProxyNet, OriginUrl };
-            return new[] { ProxyCom, GhFast, ProxyOrg, GhProxyNet, OriginUrl };
+            string[] sources = preferredSources.Length > 0 ? preferredSources : GetAllSources(segment);
+            var ordered = new string[sources.Length];
+            for (int i = 0; i < sources.Length; i++) ordered[i] = sources[(i + segment) % sources.Length];
+            return ordered;
+        }
+
+        sealed class SourceProbe
+        {
+            internal readonly string Url;
+            internal readonly double BytesPerSecond;
+            internal SourceProbe(string url, double bytesPerSecond) { Url = url; BytesPerSecond = bytesPerSecond; }
         }
 
         void SignalCompletion(bool success, Exception error)

@@ -1,0 +1,46 @@
+<Window x:Class="Workbench.LauncherWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="快捷启动器" Width="720" Height="470" WindowStyle="None" AllowsTransparency="True"
+ Background="Transparent" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
+ WindowStartupLocation="CenterScreen" Deactivated="Window_Deactivated" PreviewKeyDown="Window_PreviewKeyDown">
+ <Border Background="#FAFCFF" BorderBrush="#87A9D8" BorderThickness="1" CornerRadius="16" Padding="16">
+  <Border.Effect><DropShadowEffect BlurRadius="28" ShadowDepth="8" Opacity="0.3" Color="#10243F"/></Border.Effect>
+  <Grid>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="42"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <TextBlock Text="⌕" FontSize="27" Foreground="#2D7EF2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    <TextBox x:Name="QueryBox" Grid.Column="1" Height="52" FontSize="19" BorderThickness="0" Background="Transparent"
+             VerticalContentAlignment="Center" TextChanged="QueryBox_TextChanged" KeyDown="QueryBox_KeyDown"/>
+    <TextBlock Grid.Column="2" Text="Alt + Space" Foreground="#77869D" Background="#EDF2F8" Padding="10,6" VerticalAlignment="Center"/>
+   </Grid>
+   <Border Grid.Row="1" Height="1" Background="#DFE7F2" Margin="0,10"/>
+   <ListBox x:Name="ResultsList" Grid.Row="2" BorderThickness="0" Background="Transparent" SelectionMode="Single"
+            MouseDoubleClick="ResultsList_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+    <ListBox.ItemContainerStyle>
+     <Style TargetType="ListBoxItem">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0,2"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem">
+       <Border x:Name="ItemBorder" Padding="13,10" CornerRadius="9" Background="Transparent">
+        <ContentPresenter/>
+       </Border>
+       <ControlTemplate.Triggers>
+        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#EDF4FF"/></Trigger>
+        <Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#DDEBFF"/></Trigger>
+       </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+     </Style>
+    </ListBox.ItemContainerStyle>
+    <ListBox.ItemTemplate><DataTemplate>
+     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <Border Width="34" Height="34" CornerRadius="9" Background="#E8F1FF"><TextBlock Text="{Binding Icon}" FontSize="17" Foreground="#2D73DC" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+      <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center"><TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Foreground="#1E2E47"/><TextBlock Text="{Binding Subtitle}" FontSize="11" Foreground="#7C8AA0" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/></StackPanel>
+      <TextBlock Grid.Column="2" Text="{Binding Category}" Foreground="#78879D" FontSize="11" VerticalAlignment="Center"/>
+     </Grid>
+    </DataTemplate></ListBox.ItemTemplate>
+   </ListBox>
+   <DockPanel Grid.Row="3" Margin="8,10,8,0"><TextBlock Text="↑↓ 选择   Enter 打开   Esc 关闭" Foreground="#8492A6" FontSize="11"/><TextBlock x:Name="ResultCountText" Foreground="#8492A6" FontSize="11" HorizontalAlignment="Right"/></DockPanel>
+  </Grid>
+ </Border>
+</Window>
