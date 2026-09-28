@@ -12,11 +12,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-[assembly: AssemblyTitle("工具箱在线安装程序")]
-[assembly: AssemblyProduct("工具箱")]
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
-[assembly: AssemblyInformationalVersion("1.3.0")]
+[assembly: AssemblyTitle("小二在线安装程序")]
+[assembly: AssemblyProduct("小二")]
+[assembly: AssemblyVersion("1.3.1.0")]
+[assembly: AssemblyFileVersion("1.3.1.0")]
+[assembly: AssemblyInformationalVersion("1.3.1")]
 
 internal static class WorkbenchBootstrapper
 {
@@ -31,7 +31,7 @@ internal static class WorkbenchBootstrapper
         try { LoadPayloadInfo(); }
         catch (Exception ex)
         {
-            MessageBox.Show("更新程序配置损坏：" + ex.Message, "工具箱", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("更新程序配置损坏：" + ex.Message, "小二", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -85,7 +85,7 @@ internal static class WorkbenchBootstrapper
         internal UpdateForm(bool isDownloadOnly)
         {
             downloadOnly = isDownloadOnly;
-            Text = "工具箱自动更新";
+            Text = "小二自动更新";
             ClientSize = new Size(560, 350);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
@@ -95,7 +95,7 @@ internal static class WorkbenchBootstrapper
             if (downloadOnly) { ShowInTaskbar = false; Opacity = 0; }
             try { Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location); } catch { }
 
-            var title = new Label { Text = "正在更新工具箱 v" + Version, Font = new Font("Microsoft YaHei UI", 18F, FontStyle.Bold), AutoSize = true, Location = new Point(30, 24), ForeColor = Color.FromArgb(23, 32, 51) };
+            var title = new Label { Text = "正在更新小二 v" + Version, Font = new Font("Microsoft YaHei UI", 18F, FontStyle.Bold), AutoSize = true, Location = new Point(30, 24), ForeColor = Color.FromArgb(23, 32, 51) };
             status.Text = "正在连接国内加速线路…";
             status.AutoSize = true;
             status.Location = new Point(32, 70);
@@ -128,7 +128,7 @@ internal static class WorkbenchBootstrapper
             sourceHint.AutoSize = true;
             sourceHint.Location = new Point(32, 266);
             sourceHint.ForeColor = Color.FromArgb(22, 119, 255);
-            var hint = new Label { Text = "下载完成后将自动安装，并重新打开工具箱。", AutoSize = true, Location = new Point(32, 304), ForeColor = Color.FromArgb(104, 115, 134) };
+            var hint = new Label { Text = "下载完成后将自动安装，并重新打开小二。", AutoSize = true, Location = new Point(32, 304), ForeColor = Color.FromArgb(104, 115, 134) };
             cancel.Text = "取消更新";
             cancel.Size = new Size(96, 34);
             cancel.Location = new Point(432, 294);
@@ -340,7 +340,7 @@ internal static class WorkbenchBootstrapper
                 cancel.Text = "关闭";
                 cancel.Enabled = true;
                 finished = true;
-                MessageBox.Show("更新下载失败：" + error.Message + "\n\n请稍后重试；程序会自动重新选择线路。", "工具箱", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("更新下载失败：" + error.Message + "\n\n请稍后重试；程序会自动重新选择线路。", "小二", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -383,7 +383,7 @@ internal static class WorkbenchBootstrapper
                     return;
                 }
                 cancel.Text = "关闭";
-                MessageBox.Show("安装包校验或启动失败：" + ex.Message, "工具箱", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("安装包校验或启动失败：" + ex.Message, "小二", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

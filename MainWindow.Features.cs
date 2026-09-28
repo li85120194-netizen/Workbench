@@ -68,17 +68,17 @@ public partial class MainWindow
     {
         if (_trayIcon is not null) return;
         var menu = new System.Windows.Forms.ContextMenuStrip();
-        menu.Items.Add("打开工具箱", null, (_, _) => Dispatcher.Invoke(RestoreMainWindow));
+        menu.Items.Add("打开小二", null, (_, _) => Dispatcher.Invoke(RestoreMainWindow));
         _trayHighlightItem = new System.Windows.Forms.ToolStripMenuItem("启用鼠标高亮", null, (_, _) => Dispatcher.Invoke(ToggleHighlight));
         _trayAnnotationItem = new System.Windows.Forms.ToolStripMenuItem("开启屏幕标注", null, (_, _) => Dispatcher.Invoke(ToggleAnnotation));
         menu.Items.Add(_trayHighlightItem);
         menu.Items.Add(_trayAnnotationItem);
         menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-        menu.Items.Add("退出工具箱", null, (_, _) => Dispatcher.Invoke(Close));
+        menu.Items.Add("退出小二", null, (_, _) => Dispatcher.Invoke(Close));
 
         _trayIcon = new System.Windows.Forms.NotifyIcon
         {
-            Text = "工具箱",
+            Text = "小二",
             Visible = true,
             ContextMenuStrip = menu
         };
@@ -103,7 +103,7 @@ public partial class MainWindow
     {
         if (_trayHintShown || _trayIcon is null) return;
         _trayHintShown = true;
-        _trayIcon.ShowBalloonTip(2200, "工具箱仍在运行", "双击托盘中的“∞”图标可重新打开。", System.Windows.Forms.ToolTipIcon.Info);
+        _trayIcon.ShowBalloonTip(2200, "小二仍在运行", "双击托盘中的“小二”图标可重新打开。", System.Windows.Forms.ToolTipIcon.Info);
     }
 
     private void UpdateTrayMenuText()
@@ -181,7 +181,7 @@ public partial class MainWindow
     {
         if (ClipboardList.SelectedItem is not ClipboardEntry entry) return;
         try { System.Windows.Clipboard.SetText(entry.Text); }
-        catch (Exception ex) { System.Windows.MessageBox.Show("复制失败：" + ex.Message, "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { System.Windows.MessageBox.Show("复制失败：" + ex.Message, "小二", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void DeleteClipboardEntry_Click(object sender, RoutedEventArgs e)
@@ -196,7 +196,7 @@ public partial class MainWindow
     private void ClearClipboardHistory_Click(object sender, RoutedEventArgs e)
     {
         if (_clipboardEntries.Count == 0) return;
-        if (System.Windows.MessageBox.Show("确定清空全部剪贴板历史吗？", "工具箱", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+        if (System.Windows.MessageBox.Show("确定清空全部剪贴板历史吗？", "小二", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         _clipboardEntries.Clear();
         ClipboardPreview.Clear();
         UpdateClipboardCount();
@@ -350,7 +350,7 @@ public partial class MainWindow
 
     private void ShowStickyNote_Click(object sender, RoutedEventArgs e)
     {
-        if (NotesList.SelectedItem is not NoteItem note) { System.Windows.MessageBox.Show("请先选择或新建一条便签。", "工具箱"); return; }
+        if (NotesList.SelectedItem is not NoteItem note) { System.Windows.MessageBox.Show("请先选择或新建一条便签。", "小二"); return; }
         SaveNote_Click(sender, e);
         if (_stickyWindows.TryGetValue(note.Id, out var existing)) { existing.Show(); existing.Activate(); return; }
         var window = new StickyNoteWindow(note, () => { NotesList.Items.Refresh(); ScheduleStateSave(); });
@@ -362,7 +362,7 @@ public partial class MainWindow
     private void DeleteNote_Click(object sender, RoutedEventArgs e)
     {
         if (NotesList.SelectedItem is not NoteItem note) return;
-        if (System.Windows.MessageBox.Show($"确定删除“{note.Title}”吗？", "工具箱", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+        if (System.Windows.MessageBox.Show($"确定删除“{note.Title}”吗？", "小二", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         if (_stickyWindows.Remove(note.Id, out var window)) window.Close();
         note.PropertyChanged -= Note_PropertyChanged;
         _notes.Remove(note);
@@ -417,10 +417,10 @@ public partial class MainWindow
 
     private void ApplyRename_Click(object sender, RoutedEventArgs e)
     {
-        if (_renamePreview.Count == 0) { System.Windows.MessageBox.Show("请先选择文件并确认预览。", "工具箱"); return; }
+        if (_renamePreview.Count == 0) { System.Windows.MessageBox.Show("请先选择文件并确认预览。", "小二"); return; }
         if (System.Windows.MessageBox.Show("确认按当前预览重命名这些文件吗？", "批量重命名", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         var result = BatchRenameService.Apply(_renamePreview);
-        System.Windows.MessageBox.Show(result.Message, "工具箱", MessageBoxButton.OK, result.Renamed > 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
+        System.Windows.MessageBox.Show(result.Message, "小二", MessageBoxButton.OK, result.Renamed > 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
         _renamePaths.Clear(); _renamePreview = Array.Empty<RenamePreviewItem>(); RenamePreviewGrid.ItemsSource = null; RenameSelectionText.Text = "尚未选择文件";
     }
 
@@ -429,7 +429,7 @@ public partial class MainWindow
         var dialog = new OpenFileDialog { Multiselect = true, Title = "选择图片", Filter = "图片文件|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.gif|所有文件|*.*" };
         if (dialog.ShowDialog(this) != true) return;
         _imagePaths.Clear(); _imagePaths.AddRange(dialog.FileNames);
-        _imageOutputDirectory ??= Path.Combine(Path.GetDirectoryName(_imagePaths[0])!, "工具箱-图片输出");
+        _imageOutputDirectory ??= Path.Combine(Path.GetDirectoryName(_imagePaths[0])!, "小二-图片输出");
         ImageSelectionText.Text = $"已选择 {_imagePaths.Count} 张图片";
         ImageOutputText.Text = "输出目录：" + _imageOutputDirectory;
     }
@@ -449,8 +449,8 @@ public partial class MainWindow
 
     private async void ConvertImages_Click(object sender, RoutedEventArgs e)
     {
-        if (_imagePaths.Count == 0) { System.Windows.MessageBox.Show("请先选择图片。", "工具箱"); return; }
-        _imageOutputDirectory ??= Path.Combine(Path.GetDirectoryName(_imagePaths[0])!, "工具箱-图片输出");
+        if (_imagePaths.Count == 0) { System.Windows.MessageBox.Show("请先选择图片。", "小二"); return; }
+        _imageOutputDirectory ??= Path.Combine(Path.GetDirectoryName(_imagePaths[0])!, "小二-图片输出");
         var format = ((ComboBoxItem)ImageFormatBox.SelectedItem).Content?.ToString() ?? "JPEG";
         var maxEdge = int.TryParse(ImageMaxEdgeBox.Text, out var edge) ? Math.Max(0, edge) : 0;
         var options = new ImageConversionOptions(format, (int)ImageQualitySlider.Value, maxEdge, _imageOutputDirectory);
@@ -462,7 +462,7 @@ public partial class MainWindow
             ImageStatusText.Text = $"完成：成功 {result.Success}，失败 {result.Failed}";
             if (result.Errors.Count > 0) System.Windows.MessageBox.Show(string.Join("\n", result.Errors.Take(8)), "部分图片处理失败", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
-        catch (Exception ex) { ImageStatusText.Text = "处理失败"; System.Windows.MessageBox.Show(ex.Message, "工具箱", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception ex) { ImageStatusText.Text = "处理失败"; System.Windows.MessageBox.Show(ex.Message, "小二", MessageBoxButton.OK, MessageBoxImage.Error); }
         finally { ImageConvertButton.IsEnabled = true; }
     }
 

@@ -35,11 +35,13 @@ public partial class LauncherWindow : Window
 
     private void BuildCatalog()
     {
-        AddTool("home", "首页", "工具箱首页与概览", "⌂", "首页 主页 home");
+        AddTool("home", "首页", "小二首页与概览", "⌂", "首页 主页 home");
         AddTool("mouse", "鼠标高亮", "演示定位与屏幕标注", "◎", "鼠标 高亮 标注 mouse");
         AddTool("timer", "倒计时", "桌面悬浮倒计时", "◷", "倒计时 计时器 timer");
         AddTool("pomodoro", "番茄钟", "专注与休息循环", "●", "番茄钟 专注 pomodoro");
         AddTool("clipboard", "剪贴板历史", "查找最近复制内容", "▣", "剪贴板 复制 历史 jtb clipboard");
+        AddTool("screenshot", "截图与贴图", "区域截图、保存和桌面贴图", "▧", "截图 贴图 capture screenshot");
+        AddTool("text", "文本工具", "清理、转换与开发辅助", "文", "文本 清理 json base64 text");
         AddTool("notes", "便签 / 待办", "本地便签和待办事项", "▤", "便签 待办 note todo");
         AddTool("organizer", "桌面收纳", "预览后安全整理桌面", "▦", "桌面 收纳 整理 organizer");
         AddTool("rename", "批量重命名", "预览并批量修改文件名", "✎", "重命名 批量 plcmm rename");

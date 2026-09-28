@@ -10,7 +10,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Application publish failed.' }
 $payload = "$projectRoot\bin\Release\net6.0-windows\win-x64\publish\Workbench.exe"
 
 & $csc /nologo /target:winexe /platform:x64 /optimize+ `
-  /win32icon:"$projectRoot\Assets\Workbench.ico" `
+  /win32icon:"$projectRoot\Assets\XiaoEr.ico" `
   /resource:"$payload,WorkbenchPayload" `
   /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /reference:Microsoft.CSharp.dll `
   /out:"$repoRoot\WorkbenchFullSetup.exe" "$projectRoot\Installer\Installer.cs"
@@ -44,7 +44,7 @@ $bootstrapInfo = [IO.Path]::Combine([IO.Path]::GetTempPath(), 'WorkbenchBootstra
 [IO.File]::WriteAllText($bootstrapInfo, "$fullSize|$fullHash|$version")
 try {
   & $csc /nologo /target:winexe /platform:x64 /optimize+ `
-    /win32icon:"$projectRoot\Assets\Workbench.ico" `
+    /win32icon:"$projectRoot\Assets\XiaoEr.ico" `
     /resource:"$bootstrapInfo,WorkbenchPayloadInfo" `
     /reference:System.Windows.Forms.dll /reference:System.Drawing.dll `
     /out:"$repoRoot\WorkbenchSetup.exe" "$projectRoot\Installer\Bootstrapper.cs"

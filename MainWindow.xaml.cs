@@ -19,6 +19,7 @@ public partial class MainWindow : Window
     private const int HotkeyHighlight = 1001;
     private const int HotkeyAnnotation = 1002;
     private const int HotkeyLauncher = 1003;
+    private const int HotkeyScreenshot = 1004;
 
     private readonly ToolboxState _state = StateStore.Load();
     private LocalAccount? _activeAccount;
@@ -72,6 +73,8 @@ public partial class MainWindow : Window
                     case "rename": ShowPage(RenamePage, RenameNav, "批量重命名"); break;
                     case "settings": ShowPage(SettingsPage, SettingsNav, "设置与更新"); break;
                     case "clipboard": ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史"); break;
+            case "screenshot": ShowPage(ScreenshotPage, ScreenshotNav, "截图与贴图"); break;
+            case "text": ShowPage(TextPage, TextNav, "文本工具"); break;
                 }
                 _ = CaptureAndCloseDebugPreviewAsync(capturePath);
             }
@@ -159,6 +162,7 @@ public partial class MainWindow : Window
         RegisterHotKey(handle, HotkeyHighlight, 0x4000, 0x70);
         RegisterHotKey(handle, HotkeyAnnotation, 0x4000, 0x71);
         RegisterHotKey(handle, HotkeyLauncher, 0x0001, 0x20);
+        RegisterHotKey(handle, HotkeyScreenshot, 0x0001, 0x41);
         AddClipboardFormatListener(handle);
         if (AutoUpdateCheck.IsChecked == true) _ = CheckForUpdatesAsync(false);
     }
@@ -170,6 +174,7 @@ public partial class MainWindow : Window
             if (wParam.ToInt32() == HotkeyHighlight) ToggleHighlight();
             else if (wParam.ToInt32() == HotkeyAnnotation) ToggleAnnotation();
             else if (wParam.ToInt32() == HotkeyLauncher) ShowLauncher();
+            else if (wParam.ToInt32() == HotkeyScreenshot) CaptureRegion_Click(this, new RoutedEventArgs());
             handled = true;
         }
         else if (message == WmClipboardUpdate)
@@ -182,8 +187,8 @@ public partial class MainWindow : Window
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav, string title)
     {
         EnsureTab(page, nav, title);
-        foreach (var item in new UIElement[] { HomePage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
-        foreach (var item in new[] { HomeNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
+        foreach (var item in new UIElement[] { HomePage, ScreenshotPage, TextPage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
+        foreach (var item in new[] { HomeNav, ScreenshotNav, TextNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
         {
             item.Background = System.Windows.Media.Brushes.Transparent;
             item.BorderBrush = System.Windows.Media.Brushes.Transparent;
@@ -228,7 +233,7 @@ public partial class MainWindow : Window
         if (OpenTabsPanel.Children.Count == 0)
         {
             CurrentPageTitle.Text = string.Empty;
-            foreach (var nav in new[] { HomeNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
+            foreach (var nav in new[] { HomeNav, ScreenshotNav, TextNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
             return;
         }
         var nextIndex = Math.Min(closedIndex, OpenTabsPanel.Children.Count - 1);
@@ -237,7 +242,7 @@ public partial class MainWindow : Window
         ShowPage(nextPage, GetNavButton(nextPage), GetPageTitle(nextPage));
     }
 
-    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
+    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == ScreenshotPage ? ScreenshotNav : page == TextPage ? TextNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
 
     private string GetPageTitle(UIElement page)
     {
@@ -286,6 +291,8 @@ public partial class MainWindow : Window
             case "timer": ShowPage(TimerPage, TimerNav, "倒计时"); break;
             case "pomodoro": ShowPage(PomodoroPage, PomodoroNav, "番茄钟"); break;
             case "clipboard": ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史"); break;
+            case "screenshot": ShowPage(ScreenshotPage, ScreenshotNav, "截图与贴图"); break;
+            case "text": ShowPage(TextPage, TextNav, "文本工具"); break;
             case "notes": ShowPage(NotesPage, NotesNav, "便签 / 待办"); break;
             case "organizer": ShowPage(OrganizerPage, OrganizerNav, "桌面收纳"); RefreshOrganizerStatus(); break;
             case "rename": ShowPage(RenamePage, RenameNav, "批量重命名"); break;
@@ -354,7 +361,7 @@ public partial class MainWindow : Window
         int.TryParse(TimerMinutes.Text, out int minutes); int.TryParse(TimerSeconds.Text, out int seconds);
         totalSeconds = Math.Max(0, minutes * 60 + seconds);
         if (totalSeconds > 0) return true;
-        System.Windows.MessageBox.Show("请输入大于 0 的倒计时时长。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Information);
+        System.Windows.MessageBox.Show("请输入大于 0 的倒计时时长。", "小二", MessageBoxButton.OK, MessageBoxImage.Information);
         return false;
     }
 
@@ -409,17 +416,17 @@ public partial class MainWindow : Window
     private void Organize_Click(object sender, RoutedEventArgs e)
     {
         var files = DesktopOrganizerService.GetCandidates();
-        if (files.Count == 0) { System.Windows.MessageBox.Show("桌面没有可整理的办公文档。", "工具箱"); return; }
+        if (files.Count == 0) { System.Windows.MessageBox.Show("桌面没有可整理的办公文档。", "小二"); return; }
         if (System.Windows.MessageBox.Show($"将把 {files.Count} 个文档移动到今天的收纳文件夹。是否继续？", "确认桌面收纳", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         var result = DesktopOrganizerService.Organize();
-        System.Windows.MessageBox.Show($"已移动 {result.Moved} 项，失败 {result.Failed} 项。", "工具箱");
+        System.Windows.MessageBox.Show($"已移动 {result.Moved} 项，失败 {result.Failed} 项。", "小二");
         OrganizerPreview.ItemsSource = null; RefreshOrganizerStatus();
     }
 
     private void UndoOrganize_Click(object sender, RoutedEventArgs e)
     {
         var result = DesktopOrganizerService.UndoLast();
-        System.Windows.MessageBox.Show(result.Message, "工具箱"); RefreshOrganizerStatus();
+        System.Windows.MessageBox.Show(result.Message, "小二"); RefreshOrganizerStatus();
     }
 
     private void RefreshOrganizerStatus()
@@ -440,8 +447,8 @@ public partial class MainWindow : Window
         try
         {
             var result = await UpdateService.CheckAsync();
-            if (!result.UpdateAvailable) { if (showResult) System.Windows.MessageBox.Show("当前已经是最新版本。", "工具箱"); return; }
-            if (System.Windows.MessageBox.Show($"发现工具箱 {result.Version}，是否下载并安装？", "发现更新", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+            if (!result.UpdateAvailable) { if (showResult) System.Windows.MessageBox.Show("当前已经是最新版本。", "小二"); return; }
+            if (System.Windows.MessageBox.Show($"发现小二 {result.Version}，是否下载并安装？", "发现更新", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
             {
                 var progressWindow = new UpdateProgressWindow(result.Version) { Owner = this };
                 progressWindow.Show();
@@ -463,11 +470,11 @@ public partial class MainWindow : Window
         }
         catch (OperationCanceledException)
         {
-            if (showResult) System.Windows.MessageBox.Show("检查更新已取消。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (showResult) System.Windows.MessageBox.Show("检查更新已取消。", "小二", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            if (showResult) System.Windows.MessageBox.Show($"更新失败：{ex.Message}\n\n请稍后重试；下载程序会自动选择可用线路。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (showResult) System.Windows.MessageBox.Show($"更新失败：{ex.Message}\n\n请稍后重试；下载程序会自动选择可用线路。", "小二", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally
         {
@@ -519,7 +526,13 @@ public partial class MainWindow : Window
         ProfileInitialText.Text = string.IsNullOrWhiteSpace(name) ? "登" : name.Trim()[0].ToString();
         ProfileInitialText.Visibility = Visibility.Visible;
         ProfileAvatarShape.Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 234, 255));
-        if (string.IsNullOrWhiteSpace(_activeAccount?.AvatarPath) || !File.Exists(_activeAccount.AvatarPath)) return;
+        if (_activeAccount is null)
+        {
+            ProfileAvatarShape.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Assets/XiaoEr.png"))) { Stretch = Stretch.UniformToFill };
+            ProfileInitialText.Visibility = Visibility.Collapsed;
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_activeAccount.AvatarPath) || !File.Exists(_activeAccount.AvatarPath)) return;
         try
         {
             var image = new BitmapImage();
@@ -635,7 +648,7 @@ public partial class MainWindow : Window
         else if (!text.Contains(' ') && text.Contains('.')) url = "https://" + text;
         else url = "https://www.baidu.com/s?wd=" + Uri.EscapeDataString(text);
         try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
-        catch (Exception ex) { System.Windows.MessageBox.Show("无法打开浏览器：" + ex.Message, "工具箱", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { System.Windows.MessageBox.Show("无法打开浏览器：" + ex.Message, "小二", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void DisableHighlight()
@@ -685,6 +698,7 @@ public partial class MainWindow : Window
             UnregisterHotKey(handle, HotkeyHighlight);
             UnregisterHotKey(handle, HotkeyAnnotation);
             UnregisterHotKey(handle, HotkeyLauncher);
+            UnregisterHotKey(handle, HotkeyScreenshot);
             RemoveClipboardFormatListener(handle);
         }
         _source?.RemoveHook(WindowMessageHook);

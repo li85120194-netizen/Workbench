@@ -21,7 +21,7 @@ public partial class App : System.Windows.Application
         _singleInstanceMutex = new Mutex(true, MutexName, out bool createdNew);
         if (!createdNew)
         {
-            System.Windows.MessageBox.Show("工具箱已经在运行。", "工具箱", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.MessageBox.Show("小二已经在运行。", "小二", MessageBoxButton.OK, MessageBoxImage.Information);
             Shutdown(); return;
         }
         base.OnStartup(e);

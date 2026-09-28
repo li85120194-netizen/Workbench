@@ -11,7 +11,7 @@ public partial class UpdateProgressWindow : Window
     public UpdateProgressWindow(string version)
     {
         InitializeComponent();
-        StatusText.Text = $"正在下载工具箱 v{version} 更新引导程序…";
+        StatusText.Text = $"正在下载小二 v{version} 更新引导程序…";
     }
 
     public async Task<bool> DownloadAndStartInstallerAsync(UpdateResult update)
