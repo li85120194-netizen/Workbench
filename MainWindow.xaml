@@ -3,8 +3,8 @@
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
  xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
  Title="小二" Width="1180" Height="760" MinWidth="960" MinHeight="640"
- WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize" AllowsTransparency="True"
- Background="Transparent" FontFamily="Microsoft YaHei UI" UseLayoutRounding="True"
+ WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize" AllowsTransparency="False"
+ Background="#FFF8F0" FontFamily="Microsoft YaHei UI" UseLayoutRounding="True"
  Closing="Window_Closing" SourceInitialized="Window_SourceInitialized" StateChanged="Window_StateChanged">
  <shell:WindowChrome.WindowChrome>
   <shell:WindowChrome CaptionHeight="42" ResizeBorderThickness="7" CornerRadius="16"
@@ -12,13 +12,13 @@
  </shell:WindowChrome.WindowChrome>
  <Window.Resources>
   <LinearGradientBrush x:Key="SidebarBrush" StartPoint="0,0" EndPoint="1,1">
-   <GradientStop Color="#10243F" Offset="0"/><GradientStop Color="#153152" Offset="0.58"/><GradientStop Color="#0F2441" Offset="1"/>
+   <GradientStop Color="#171723" Offset="0"/><GradientStop Color="#24233A" Offset="0.58"/><GradientStop Color="#10111B" Offset="1"/>
   </LinearGradientBrush>
   <LinearGradientBrush x:Key="ActiveNavBrush" StartPoint="0,0" EndPoint="1,0">
-   <GradientStop Color="#2875E8" Offset="0"/><GradientStop Color="#244F9B" Offset="1"/>
+   <GradientStop Color="#3657B7" Offset="0"/><GradientStop Color="#273B83" Offset="1"/>
   </LinearGradientBrush>
   <LinearGradientBrush x:Key="PrimaryBrush" StartPoint="0,0" EndPoint="0,1">
-   <GradientStop Color="#3989FF" Offset="0"/><GradientStop Color="#1765EA" Offset="1"/>
+   <GradientStop Color="#5576DE" Offset="0"/><GradientStop Color="#3554B2" Offset="1"/>
   </LinearGradientBrush>
 
   <Style x:Key="NavButton" TargetType="Button">
@@ -44,15 +44,15 @@
   <Style x:Key="ActionButton" TargetType="Button">
    <Setter Property="Height" Value="36"/><Setter Property="MinWidth" Value="96"/><Setter Property="Margin" Value="4"/>
    <Setter Property="Padding" Value="13,0"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/>
-   <Setter Property="Foreground" Value="#324765"/><Setter Property="Background" Value="#FAFCFF"/>
-   <Setter Property="BorderBrush" Value="#D7E2F1"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Cursor" Value="Hand"/>
+   <Setter Property="Foreground" Value="#324765"/><Setter Property="Background" Value="#FFFCF8"/>
+   <Setter Property="BorderBrush" Value="#E4D5C8"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Cursor" Value="Hand"/>
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
     <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="9" Padding="{TemplateBinding Padding}">
      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Border>
     <ControlTemplate.Triggers>
-     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#80ADFA"/><Setter TargetName="ButtonBorder" Property="Background" Value="#F2F7FF"/></Trigger>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#E1A565"/><Setter TargetName="ButtonBorder" Property="Background" Value="#FFF3E8"/></Trigger>
      <Trigger Property="IsPressed" Value="True"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.78"/></Trigger>
      <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45"/></Trigger>
     </ControlTemplate.Triggers>
@@ -82,15 +82,15 @@
    <Setter Property="Padding" Value="18"/><Setter Property="CornerRadius" Value="13"/><Setter Property="Background" Value="#FCFEFF"/>
    <Setter Property="BorderBrush" Value="#E6EDF7"/><Setter Property="BorderThickness" Value="1"/>
   </Style>
-  <Style x:Key="PageTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="#0E1D35"/></Style>
-  <Style x:Key="PageSubtitle" TargetType="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#73829C"/><Setter Property="Margin" Value="0,5,0,0"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
-  <Style x:Key="CardTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#15233B"/></Style>
-  <Style x:Key="MutedText" TargetType="TextBlock"><Setter Property="Foreground" Value="#7B8AA4"/></Style>
+  <Style x:Key="PageTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="#2B2330"/></Style>
+  <Style x:Key="PageSubtitle" TargetType="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#766A72"/><Setter Property="Margin" Value="0,5,0,0"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+  <Style x:Key="CardTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#2D2430"/></Style>
+  <Style x:Key="MutedText" TargetType="TextBlock"><Setter Property="Foreground" Value="#82747C"/></Style>
   <Style x:Key="FieldLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="#40516D"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
   <Style TargetType="TextBox">
    <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="11,0"/><Setter Property="FontSize" Value="14"/>
    <Setter Property="VerticalContentAlignment" Value="Center"/>
-   <Setter Property="Foreground" Value="#1B2A42"/><Setter Property="Background" Value="#FAFCFF"/>
+   <Setter Property="Foreground" Value="#1B2A42"/><Setter Property="Background" Value="#FFFCF8"/>
    <Setter Property="BorderBrush" Value="#D8E2F0"/><Setter Property="BorderThickness" Value="1"/>
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox">
     <Border x:Name="TextBoxBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
@@ -104,18 +104,18 @@
   </Style>
   <Style TargetType="ComboBox">
    <Setter Property="Height" Value="38"/><Setter Property="Padding" Value="9,4"/><Setter Property="VerticalContentAlignment" Value="Center"/>
-   <Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#1B2A42"/><Setter Property="Background" Value="#FAFCFF"/>
+   <Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#1B2A42"/><Setter Property="Background" Value="#FFFCF8"/>
    <Setter Property="BorderBrush" Value="#D8E2F0"/><Setter Property="BorderThickness" Value="1"/>
    <Setter Property="ItemContainerStyle"><Setter.Value><Style TargetType="ComboBoxItem">
     <Setter Property="Padding" Value="11,8"/><Setter Property="Foreground" Value="#263750"/><Setter Property="Background" Value="Transparent"/>
-    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBoxItem"><Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border><ControlTemplate.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#EAF2FF"/></Trigger><Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#DCEAFF"/><Setter Property="Foreground" Value="#1765EA"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBoxItem"><Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border><ControlTemplate.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#EAF2FF"/></Trigger><Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#DCEAFF"/><Setter Property="Foreground" Value="#3554B2"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
    </Style></Setter.Value></Setter>
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBox">
     <Grid>
      <ToggleButton x:Name="DropDownToggle" Focusable="False" ClickMode="Press" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Background="Transparent" BorderThickness="0">
       <ToggleButton.Template><ControlTemplate TargetType="ToggleButton"><Border x:Name="ComboBorder" Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}" BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}" BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}" CornerRadius="8"><Grid><ContentPresenter Margin="12,0,38,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{Binding SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}" ContentTemplate="{Binding SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"/><Path Data="M 0 0 L 5 5 L 10 0" Stroke="#60718C" StrokeThickness="1.7" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,14,0"/></Grid></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ComboBorder" Property="BorderBrush" Value="#91B4EC"/></Trigger><Trigger Property="IsChecked" Value="True"><Setter TargetName="ComboBorder" Property="BorderBrush" Value="#5B96F5"/></Trigger></ControlTemplate.Triggers></ControlTemplate></ToggleButton.Template>
      </ToggleButton>
-     <Popup x:Name="PART_Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade"><Border Background="White" BorderBrush="#CFDBEB" BorderThickness="1" CornerRadius="8" Padding="5" Margin="0,4,0,0"><ScrollViewer MaxHeight="280" CanContentScroll="True"><ItemsPresenter/></ScrollViewer></Border></Popup>
+     <Popup x:Name="PART_Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="False" Focusable="False" PopupAnimation="Fade"><Border Background="White" BorderBrush="#CFDBEB" BorderThickness="1" CornerRadius="8" Padding="5" Margin="0,4,0,0"><ScrollViewer MaxHeight="280" CanContentScroll="True"><ItemsPresenter/></ScrollViewer></Border></Popup>
     </Grid>
     <ControlTemplate.Triggers><Trigger Property="IsEnabled" Value="False"><Setter TargetName="DropDownToggle" Property="Opacity" Value="0.55"/></Trigger></ControlTemplate.Triggers>
    </ControlTemplate></Setter.Value></Setter>
@@ -132,8 +132,8 @@
     </Grid>
    </ControlTemplate></Setter.Value></Setter>
   </Style>
-  <Style TargetType="ListBox"><Setter Property="Background" Value="#FAFCFF"/><Setter Property="BorderBrush" Value="#DDE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="4"/></Style>
-  <Style TargetType="DataGrid"><Setter Property="Background" Value="#FAFCFF"/><Setter Property="BorderBrush" Value="#DDE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="GridLinesVisibility" Value="Horizontal"/><Setter Property="HorizontalGridLinesBrush" Value="#EDF2F8"/><Setter Property="RowBackground" Value="White"/><Setter Property="AlternatingRowBackground" Value="#F8FAFD"/></Style>
+  <Style TargetType="ListBox"><Setter Property="Background" Value="#FFFCF8"/><Setter Property="BorderBrush" Value="#DDE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="4"/></Style>
+  <Style TargetType="DataGrid"><Setter Property="Background" Value="#FFFCF8"/><Setter Property="BorderBrush" Value="#DDE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="GridLinesVisibility" Value="Horizontal"/><Setter Property="HorizontalGridLinesBrush" Value="#EDF2F8"/><Setter Property="RowBackground" Value="White"/><Setter Property="AlternatingRowBackground" Value="#F8FAFD"/></Style>
   <Style TargetType="ProgressBar"><Setter Property="Foreground" Value="#2B7EF3"/><Setter Property="Background" Value="#DFE8F4"/></Style>
   <Style x:Key="SidebarExpander" TargetType="Expander">
    <Setter Property="Foreground" Value="#AFC6E4"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Margin" Value="7,3"/>
@@ -154,7 +154,7 @@
     </Border>
     <ControlTemplate.Triggers>
      <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#F0F5FD"/><Setter TargetName="ItemBorder" Property="BorderBrush" Value="#C9D9F0"/></Trigger>
-     <Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#E8F1FF"/><Setter TargetName="ItemBorder" Property="BorderBrush" Value="#72A5F7"/></Trigger>
+     <Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#EEF0FF"/><Setter TargetName="ItemBorder" Property="BorderBrush" Value="#72A5F7"/></Trigger>
     </ControlTemplate.Triggers>
    </ControlTemplate></Setter.Value></Setter>
   </Style>
@@ -164,7 +164,7 @@
   </Style>
  </Window.Resources>
 
- <Border x:Name="WindowBorder" CornerRadius="16" BorderBrush="#C9D5E5" BorderThickness="1" Background="#F3F7FD" ClipToBounds="True">
+ <Border x:Name="WindowBorder" CornerRadius="16" BorderBrush="#D9C9BD" BorderThickness="1" Background="#FFF8F0" ClipToBounds="True">
   <Grid>
    <Grid.ColumnDefinitions><ColumnDefinition x:Name="SidebarColumn" Width="196" MinWidth="168" MaxWidth="270"/><ColumnDefinition Width="5"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
    <Grid.RowDefinitions><RowDefinition Height="42"/><RowDefinition Height="*"/></Grid.RowDefinitions>
@@ -183,7 +183,7 @@
      </Grid>
           <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><ScrollViewer.Resources><Style TargetType="ScrollBar" BasedOn="{StaticResource SidebarScrollBar}"/></ScrollViewer.Resources><StackPanel>
       <TextBox x:Name="NavSearchBox" Margin="12,0,12,8" Height="34" TextChanged="NavSearch_Changed" ToolTip="搜索功能" />
-      <Button x:Name="HomeNav" Style="{StaticResource NavButton}" Click="HomeNav_Click" BorderBrush="#58D8FF"><Button.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#2875E8"/><GradientStop Color="#244F9B" Offset="1"/></LinearGradientBrush></Button.Background><TextBlock Text="首页" VerticalAlignment="Center"/></Button>
+      <Button x:Name="HomeNav" Style="{StaticResource NavButton}" Click="HomeNav_Click" BorderBrush="#FFC83D"><Button.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#3657B7"/><GradientStop Color="#273B83" Offset="1"/></LinearGradientBrush></Button.Background><TextBlock Text="首页" VerticalAlignment="Center"/></Button>
       <Expander x:Name="PresentationExpander" Header="小工具" Style="{StaticResource SidebarExpander}" IsExpanded="True"><StackPanel>
        <Button x:Name="MouseNav" Style="{StaticResource NavButton}" Click="MouseNav_Click"><TextBlock Text="鼠标高亮"/></Button>
        <Button x:Name="TimerNav" Style="{StaticResource NavButton}" Click="TimerNav_Click"><TextBlock Text="倒计时"/></Button>
@@ -191,6 +191,7 @@
        <Button x:Name="ClipboardNav" Style="{StaticResource NavButton}" Click="ClipboardNav_Click"><TextBlock Text="剪贴板历史"/></Button>
        <Button x:Name="ScreenshotNav" Style="{StaticResource NavButton}" Click="ScreenshotNav_Click"><TextBlock Text="截图与贴图"/></Button>
        <Button x:Name="TextNav" Style="{StaticResource NavButton}" Click="TextNav_Click"><TextBlock Text="文本工具"/></Button>
+       <Button x:Name="AdvancedNav" Style="{StaticResource NavButton}" Click="AdvancedNav_Click"><TextBlock Text="文件与实用工具"/></Button>
        <Button x:Name="NotesNav" Style="{StaticResource NavButton}" Click="NotesNav_Click"><TextBlock Text="便签 / 待办"/></Button>
        <Button x:Name="OrganizerNav" Style="{StaticResource NavButton}" Click="OrganizerNav_Click"><TextBlock Text="桌面收纳"/></Button>
        <Button x:Name="RenameNav" Style="{StaticResource NavButton}" Click="RenameNav_Click"><TextBlock Text="批量重命名"/></Button>
@@ -202,12 +203,12 @@
        <Button x:Name="OperationsAdminNav" Style="{StaticResource NavButton}" Click="OperationsAdminNav_Click"><TextBlock Text="内容配置"/></Button>
       </StackPanel></Expander>
       <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="SettingsNav_Click"><TextBlock Text="设置与更新"/></Button>
-     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.1" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
+     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.3" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
     </Grid>
    </Border>
    <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragCompleted="SidebarSplitter_DragCompleted" ToolTip="拖动调整菜单宽度"/>
 
-   <Grid Grid.Column="2" Background="#F5F8FD">
+   <Grid Grid.Column="2" Background="#FFF9F3">
     <TextBlock x:Name="CurrentPageTitle" Text="首页" Foreground="#8B9AB0" VerticalAlignment="Center" Margin="20,0,0,0" FontSize="11"/>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
      <Button Content="—" Style="{StaticResource TitleButton}" Click="MinimizeWindow_Click"/>
@@ -218,7 +219,7 @@
 
    <Grid Grid.Column="2" Grid.Row="1" Margin="20,2,20,18">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-    <Border Background="#EAF0F8" BorderBrush="#D6E0ED" BorderThickness="1" CornerRadius="9" Padding="5" Margin="0,0,0,10">
+    <Border Background="#F3EDE7" BorderBrush="#DED2C8" BorderThickness="1" CornerRadius="9" Padding="5" Margin="0,0,0,10">
      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"><WrapPanel x:Name="OpenTabsPanel"/></ScrollViewer>
     </Border>
     <Grid Grid.Row="1">
@@ -229,7 +230,7 @@
        <StackPanel VerticalAlignment="Center">
         <TextBlock Text="工作台" Style="{StaticResource PageTitle}"/>
         <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
-         <TextBlock x:Name="HomeDateText" Text="正在读取日期" Foreground="#73829C" FontSize="12" VerticalAlignment="Center"/>
+         <TextBlock x:Name="HomeDateText" Text="正在读取日期" Foreground="#766A72" FontSize="12" VerticalAlignment="Center"/>
          <TextBlock Text="  ·  " Foreground="#A8B4C5"/>
          <TextBlock x:Name="HomeClockText" Text="--:--" Foreground="#52647E" FontSize="12" VerticalAlignment="Center"/>
         </StackPanel>
@@ -243,15 +244,15 @@
        </Border>
       </Grid>
 
-      <TextBlock Text="常用工具" FontSize="16" FontWeight="SemiBold" Foreground="#20304A" Margin="6,0,0,8"/>
+      <TextBlock Text="常用工具" FontSize="16" FontWeight="SemiBold" Foreground="#2E2630" Margin="6,0,0,8"/>
       <UniformGrid Columns="3" Margin="-2,0,0,12">
-       <Button Style="{StaticResource HomeToolButton}" Click="MouseNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#E8F1FF"><TextBlock Text="◎" FontSize="21" Foreground="#2E7BEF" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="鼠标高亮" FontWeight="SemiBold"/><TextBlock Text="演示定位与屏幕标注" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
+       <Button Style="{StaticResource HomeToolButton}" Click="MouseNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#EEF0FF"><TextBlock Text="◎" FontSize="21" Foreground="#3D5FC2" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="鼠标高亮" FontWeight="SemiBold"/><TextBlock Text="演示定位与屏幕标注" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
        <Button Style="{StaticResource HomeToolButton}" Click="TimerNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#EAF7F2"><TextBlock Text="◷" FontSize="21" Foreground="#188664" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="倒计时" FontWeight="SemiBold"/><TextBlock Text="桌面控时与超时提醒" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
        <Button Style="{StaticResource HomeToolButton}" Click="PomodoroNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#FFF0F1"><TextBlock Text="◉" FontSize="19" Foreground="#D94D5A" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="番茄钟" FontWeight="SemiBold"/><TextBlock Text="专注循环与悬浮计时" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
        <Button Style="{StaticResource HomeToolButton}" Click="ClipboardNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#F0EDFF"><TextBlock Text="▣" FontSize="18" Foreground="#7258D4" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="剪贴板历史" FontWeight="SemiBold"/><TextBlock Text="快速找回复制内容" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
        <Button Style="{StaticResource HomeToolButton}" Click="ScreenshotNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#E6F7FF"><TextBlock Text="▧" FontSize="19" Foreground="#1686C4" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="截图与贴图" FontWeight="SemiBold"/><TextBlock Text="区域截图、保存与置顶" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
        <Button Style="{StaticResource HomeToolButton}" Click="TextNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#F4EDFF"><TextBlock Text="文" FontSize="18" Foreground="#7557CC" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="文本工具" FontWeight="SemiBold"/><TextBlock Text="清理、转换与格式化" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
-       <Button Style="{StaticResource HomeToolButton}" Click="NotesNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#FFF6DD"><TextBlock Text="▤" FontSize="18" Foreground="#CA8C1F" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="便签 / 待办" FontWeight="SemiBold"/><TextBlock Text="本地记录与桌面置顶" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
+       <Button Style="{StaticResource HomeToolButton}" Click="NotesNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#FFF0C9"><TextBlock Text="▤" FontSize="18" Foreground="#D18E18" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="便签 / 待办" FontWeight="SemiBold"/><TextBlock Text="本地记录与桌面置顶" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
        <Button Style="{StaticResource HomeToolButton}" Click="OrganizerNav_Click"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="34" Height="34" CornerRadius="9" Background="#EAF8F3"><TextBlock Text="▦" FontSize="18" Foreground="#15966B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="11,0,0,0"><TextBlock Text="桌面收纳" FontWeight="SemiBold"/><TextBlock Text="预览后安全整理文件" FontSize="11" Foreground="#7B8AA0" Margin="0,4,0,0"/></StackPanel></Grid></Button>
       </UniformGrid>
 
@@ -259,24 +260,24 @@
        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
        <Border Style="{StaticResource Card}">
         <StackPanel>
-         <DockPanel><TextBlock Text="今日概览" FontSize="16" FontWeight="SemiBold" Foreground="#20304A"/><Button Content="开始专注" Click="HomeStartPomodoro_Click" Style="{StaticResource ActionButton}" HorizontalAlignment="Right" Margin="0" Height="30"/></DockPanel>
+         <DockPanel><TextBlock Text="今日概览" FontSize="16" FontWeight="SemiBold" Foreground="#2E2630"/><Button Content="开始专注" Click="HomeStartPomodoro_Click" Style="{StaticResource ActionButton}" HorizontalAlignment="Right" Margin="0" Height="30"/></DockPanel>
          <UniformGrid Columns="3" Margin="-4,15,-4,0">
-          <StackPanel Margin="4"><TextBlock Text="待办便签" Foreground="#7B8AA4" FontSize="11"/><TextBlock x:Name="HomeNotesCount" Text="0 条" FontSize="22" FontWeight="SemiBold" Foreground="#1C2B43" Margin="0,5,0,0"/></StackPanel>
-          <StackPanel Margin="4"><TextBlock Text="剪贴板" Foreground="#7B8AA4" FontSize="11"/><TextBlock x:Name="HomeClipboardCount" Text="0 条" FontSize="22" FontWeight="SemiBold" Foreground="#1C2B43" Margin="0,5,0,0"/></StackPanel>
-          <StackPanel Margin="4"><TextBlock Text="高亮状态" Foreground="#7B8AA4" FontSize="11"/><TextBlock x:Name="HomeHighlightStatus" Text="未启用" FontSize="22" FontWeight="SemiBold" Foreground="#1C2B43" Margin="0,5,0,0"/></StackPanel>
+          <StackPanel Margin="4"><TextBlock Text="待办便签" Foreground="#82747C" FontSize="11"/><TextBlock x:Name="HomeNotesCount" Text="0 条" FontSize="22" FontWeight="SemiBold" Foreground="#1C2B43" Margin="0,5,0,0"/></StackPanel>
+          <StackPanel Margin="4"><TextBlock Text="剪贴板" Foreground="#82747C" FontSize="11"/><TextBlock x:Name="HomeClipboardCount" Text="0 条" FontSize="22" FontWeight="SemiBold" Foreground="#1C2B43" Margin="0,5,0,0"/></StackPanel>
+          <StackPanel Margin="4"><TextBlock Text="高亮状态" Foreground="#82747C" FontSize="11"/><TextBlock x:Name="HomeHighlightStatus" Text="未启用" FontSize="22" FontWeight="SemiBold" Foreground="#1C2B43" Margin="0,5,0,0"/></StackPanel>
          </UniformGrid>
          <TextBlock x:Name="HomePomodoroTime" Text="25:00" Visibility="Collapsed"/>
         </StackPanel>
        </Border>
        <Border Grid.Column="2" Style="{StaticResource Card}">
         <StackPanel>
-         <TextBlock Text="更多文件工具" FontSize="16" FontWeight="SemiBold" Foreground="#20304A"/>
+         <TextBlock Text="更多文件工具" FontSize="16" FontWeight="SemiBold" Foreground="#2E2630"/>
          <UniformGrid Columns="3" Margin="-4,13,-4,0">
           <Button Content="批量重命名" Click="RenameNav_Click" Style="{StaticResource ActionButton}" Margin="4"/>
           <Button Content="图片处理" Click="ImageNav_Click" Style="{StaticResource ActionButton}" Margin="4"/>
           <Button Content="PDF 工具" Click="PdfNav_Click" Style="{StaticResource ActionButton}" Margin="4"/>
          </UniformGrid>
-         <TextBlock Text="所有处理均在本机完成，不上传文件。" Foreground="#7B8AA4" FontSize="11" Margin="4,11,0,0"/>
+         <TextBlock Text="所有处理均在本机完成，不上传文件。" Foreground="#82747C" FontSize="11" Margin="4,11,0,0"/>
         </StackPanel>
        </Border>
       </Grid>
@@ -284,11 +285,18 @@
     </ScrollViewer>
     <ScrollViewer x:Name="ScreenshotPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto"><StackPanel>
      <TextBlock Text="截图与贴图" Style="{StaticResource PageTitle}"/><TextBlock Text="本地截图、复制、保存和无边框置顶贴图。" Style="{StaticResource PageSubtitle}" Margin="0,0,0,18"/>
-     <Border Style="{StaticResource Card}"><StackPanel><WrapPanel><Button Content="区域截图  Alt+A" Click="CaptureRegion_Click" Style="{StaticResource PrimaryButton}"/><Button Content="全屏截图" Click="CaptureFull_Click" Style="{StaticResource ActionButton}"/><Button Content="屏幕标注" Click="AnnotateScreenshot_Click" Style="{StaticResource ActionButton}"/><Button Content="复制" Click="CopyScreenshot_Click" Style="{StaticResource ActionButton}"/><Button Content="保存" Click="SaveScreenshot_Click" Style="{StaticResource ActionButton}"/><Button Content="贴到桌面" Click="PinScreenshot_Click" Style="{StaticResource ActionButton}"/></WrapPanel><TextBlock x:Name="ScreenshotHint" Text="选择一种截图方式开始；截图只在本机处理。" Style="{StaticResource MutedText}" Margin="4,12"/><Border Height="420" Background="#EEF3F9" CornerRadius="10" BorderBrush="#D9E3EF" BorderThickness="1"><Image x:Name="ScreenshotPreview" Stretch="Uniform" Margin="10"/></Border></StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel><WrapPanel><Button Content="区域截图  Alt+A" Click="CaptureRegion_Click" Style="{StaticResource PrimaryButton}"/><Button Content="全屏截图" Click="CaptureFull_Click" Style="{StaticResource ActionButton}"/><Button Content="屏幕标注" Click="AnnotateScreenshot_Click" Style="{StaticResource ActionButton}"/><Button Content="本地 OCR" Click="OcrImage_Click" Style="{StaticResource ActionButton}"/><Button Content="复制" Click="CopyScreenshot_Click" Style="{StaticResource ActionButton}"/><Button Content="保存" Click="SaveScreenshot_Click" Style="{StaticResource ActionButton}"/><Button Content="贴到桌面" Click="PinScreenshot_Click" Style="{StaticResource ActionButton}"/></WrapPanel><TextBlock x:Name="ScreenshotHint" Text="选择一种截图方式开始；截图只在本机处理。" Style="{StaticResource MutedText}" Margin="4,12"/><Border Height="420" Background="#EEF3F9" CornerRadius="10" BorderBrush="#D9E3EF" BorderThickness="1"><Image x:Name="ScreenshotPreview" Stretch="Uniform" Margin="10"/></Border></StackPanel></Border>
     </StackPanel></ScrollViewer>
     <ScrollViewer x:Name="TextPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto"><StackPanel>
      <TextBlock Text="文本工具" Style="{StaticResource PageTitle}"/><TextBlock Text="清理、转换、排序和开发辅助；原文保留，可随时撤销。" Style="{StaticResource PageSubtitle}" Margin="0,0,0,14"/>
      <Border Style="{StaticResource Card}"><StackPanel><WrapPanel><Button Content="去首尾空格" Tag="trim" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="删除空行" Tag="blank" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="合并空格" Tag="spaces" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="行去重" Tag="unique" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="去 HTML" Tag="html" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="大写" Tag="upper" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="小写" Tag="lower" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="排序" Tag="sort" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="JSON 格式化" Tag="json" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="URL 编码" Tag="urlencode" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="URL 解码" Tag="urldecode" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="Base64 编码" Tag="b64e" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/><Button Content="Base64 解码" Tag="b64d" Click="TextOperation_Click" Style="{StaticResource ActionButton}"/></WrapPanel><Grid Margin="0,12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions><TextBox x:Name="TextInputBox" Height="360" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" TextChanged="TextInput_Changed"/><TextBox x:Name="TextOutputBox" Grid.Column="2" Height="360" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/></Grid><DockPanel><TextBlock x:Name="TextStats" Text="字符 0 · 行 1" VerticalAlignment="Center" Foreground="#64758D"/><WrapPanel HorizontalAlignment="Right"><Button Content="导入" Click="TextImport_Click" Style="{StaticResource ActionButton}"/><Button Content="导出" Click="TextExport_Click" Style="{StaticResource ActionButton}"/><Button Content="撤销" Click="TextUndo_Click" Style="{StaticResource ActionButton}"/><Button Content="交换" Click="TextSwap_Click" Style="{StaticResource ActionButton}"/><Button Content="复制结果" Click="TextCopy_Click" Style="{StaticResource PrimaryButton}"/></WrapPanel></DockPanel></StackPanel></Border>
+    </StackPanel></ScrollViewer>    <ScrollViewer x:Name="AdvancedPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto"><StackPanel>
+     <TextBlock Text="文件与实用工具" Style="{StaticResource PageTitle}"/><TextBlock Text="搜索、哈希、重复文件预览、密码、换算、磁盘与 Markdown，全部本地运行。" Style="{StaticResource PageSubtitle}" Margin="0,0,0,16"/>
+     <TabControl Background="Transparent" BorderThickness="0">
+      <TabItem Header="文件搜索 / 查重"><Border Style="{StaticResource Card}" Margin="0,10,0,0"><StackPanel><WrapPanel><Button Content="选择文件夹" Click="SelectAdvancedFolder_Click" Style="{StaticResource PrimaryButton}"/><TextBox x:Name="FileSearchQuery" Width="240" Margin="8,4" ToolTip="文件名关键词"/><Button Content="搜索" Click="FileSearch_Click" Style="{StaticResource ActionButton}"/><Button Content="扫描重复文件" Click="DuplicateScan_Click" Style="{StaticResource ActionButton}"/><Button Content="计算文件哈希" Click="HashFile_Click" Style="{StaticResource ActionButton}"/><Button Content="磁盘概览" Click="AnalyzeDisk_Click" Style="{StaticResource ActionButton}"/></WrapPanel><TextBlock x:Name="AdvancedFolderText" Text="尚未选择文件夹" Margin="5,10" Foreground="#766A72" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="AdvancedStatus" Text="危险操作只提供预览，不会自动删除文件。" Margin="5,0,5,10" Foreground="#B06C24"/><ListBox x:Name="AdvancedResults" Height="380" FontFamily="Consolas" FontSize="12"/></StackPanel></Border></TabItem>
+      <TabItem Header="密码 / 换算"><Border Style="{StaticResource Card}" Margin="0,10,0,0"><StackPanel><TextBlock Text="安全密码生成器" Style="{StaticResource CardTitle}"/><WrapPanel Margin="0,12,0,22"><TextBox x:Name="PasswordResult" Width="360" IsReadOnly="True" FontFamily="Consolas"/><Button Content="生成" Click="GeneratePassword_Click" Style="{StaticResource PrimaryButton}"/><Button Content="复制" Click="CopyPassword_Click" Style="{StaticResource ActionButton}"/></WrapPanel><TextBlock Text="常用换算" Style="{StaticResource CardTitle}"/><WrapPanel Margin="0,12"><TextBox x:Name="UnitInput" Width="160"/><ComboBox x:Name="UnitType" Width="220" SelectedIndex="0" Margin="8,0"><ComboBoxItem Content="千米 → 米"/><ComboBoxItem Content="米 → 千米"/><ComboBoxItem Content="千克 → 磅"/><ComboBoxItem Content="华氏度 → 摄氏度"/></ComboBox><Button Content="换算" Click="ConvertUnit_Click" Style="{StaticResource PrimaryButton}"/><TextBlock x:Name="UnitResult" Margin="15,0" VerticalAlignment="Center" FontSize="17" FontWeight="SemiBold"/></WrapPanel></StackPanel></Border></TabItem>
+      <TabItem Header="Markdown"><Border Style="{StaticResource Card}" Margin="0,10,0,0"><StackPanel><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions><TextBox x:Name="MarkdownInput" Height="400" AcceptsReturn="True" VerticalContentAlignment="Top" TextWrapping="Wrap"/><TextBox x:Name="MarkdownOutput" Grid.Column="2" Height="400" IsReadOnly="True" AcceptsReturn="True" VerticalContentAlignment="Top" TextWrapping="Wrap"/></Grid><Button Content="生成本地预览" Click="MarkdownPreview_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" Margin="0,12,0,0"/></StackPanel></Border></TabItem>
+     </TabControl>
     </StackPanel></ScrollViewer>    <ScrollViewer x:Name="MousePage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
      <StackPanel>
       <Grid Height="134" Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="104"/><ColumnDefinition Width="*"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
@@ -337,7 +345,7 @@
     </ScrollViewer>
 
     <ScrollViewer x:Name="TimerPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel x:Name="TimerPanel">
-     <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#E8F1FF" VerticalAlignment="Center"><TextBlock Text="◷" FontSize="34" Foreground="#2C78ED" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="倒计时" Style="{StaticResource PageTitle}"/><TextBlock Text="开启可拖动、可缩放、始终置顶的悬浮计时器。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
+     <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#EEF0FF" VerticalAlignment="Center"><TextBlock Text="◷" FontSize="34" Foreground="#2C78ED" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="倒计时" Style="{StaticResource PageTitle}"/><TextBlock Text="开启可拖动、可缩放、始终置顶的悬浮计时器。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
      <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="设置倒计时时长" Style="{StaticResource CardTitle}"/><TextBlock Text="归零后会继续显示红色负计时，适合演讲和会议控时。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><StackPanel Orientation="Horizontal"><TextBox x:Name="TimerMinutes" Text="10" Width="110" Height="48" FontSize="20" TextAlignment="Center"/><TextBlock Text="分钟" VerticalAlignment="Center" Margin="12,0,28,0"/><TextBox x:Name="TimerSeconds" Text="0" Width="110" Height="48" FontSize="20" TextAlignment="Center"/><TextBlock Text="秒" VerticalAlignment="Center" Margin="12,0,0,0"/></StackPanel><WrapPanel Margin="0,20,0,0"><Button Content="▶  启动倒计时" Click="StartTimer_Click" Style="{StaticResource PrimaryButton}"/><Button Content="开始 / 暂停" Click="ToggleTimer_Click" Style="{StaticResource ActionButton}"/><Button Content="重置" Click="ResetTimer_Click" Style="{StaticResource ActionButton}"/></WrapPanel><StackPanel x:Name="TimerBackgroundHost"/></StackPanel></Border>
     </StackPanel></ScrollViewer>
 
@@ -367,7 +375,7 @@
        <Grid Margin="16">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
         <DockPanel Margin="0,0,0,12">
-         <TextBlock Text="历史记录" FontSize="15" FontWeight="SemiBold" Foreground="#20304A" VerticalAlignment="Center"/>
+         <TextBlock Text="历史记录" FontSize="15" FontWeight="SemiBold" Foreground="#2E2630" VerticalAlignment="Center"/>
          <CheckBox x:Name="ClipboardMonitorCheck" Content="自动记录" IsChecked="True" Checked="ClipboardMonitorCheck_Changed" Unchecked="ClipboardMonitorCheck_Changed" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </DockPanel>
         <ListBox x:Name="ClipboardList" Grid.Row="1" Background="Transparent" BorderThickness="0" Padding="0"
@@ -390,7 +398,7 @@
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <DockPanel Margin="0,0,0,12">
          <StackPanel>
-          <TextBlock Text="内容预览" FontSize="15" FontWeight="SemiBold" Foreground="#20304A"/>
+          <TextBlock Text="内容预览" FontSize="15" FontWeight="SemiBold" Foreground="#2E2630"/>
           <TextBlock Text="选择左侧记录查看完整内容，双击可直接复制。" FontSize="11" Foreground="#8492A6" Margin="0,4,0,0"/>
          </StackPanel>
         </DockPanel>
@@ -410,8 +418,8 @@
     </Grid>
 
     <ScrollViewer x:Name="NotesPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
-     <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#FFF6DD" VerticalAlignment="Center"><TextBlock Text="▤" FontSize="30" Foreground="#D49A21" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="桌面便签 / 待办" Style="{StaticResource PageTitle}"/><TextBlock Text="记录待办，并可显示为始终置顶的桌面便签。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
-     <Border Style="{StaticResource Card}"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><StackPanel Margin="0,0,20,0"><ListBox x:Name="NotesList" Height="370" SelectionChanged="NotesList_SelectionChanged"><ListBox.ItemTemplate><DataTemplate><Grid Margin="7"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="66"/></Grid.ColumnDefinitions><TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="#263750" TextTrimming="CharacterEllipsis"/><TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="#7B8AA4" HorizontalAlignment="Right"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox><Button Content="＋  新建便签" Click="NewNote_Click" Style="{StaticResource ActionButton}" Margin="0,12,0,0" HorizontalAlignment="Stretch"/></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="标题" Style="{StaticResource FieldLabel}"/><TextBox x:Name="NoteTitleBox" Height="40" Margin="0,7,0,14"/><TextBlock Text="内容" Style="{StaticResource FieldLabel}"/><TextBox x:Name="NoteContentBox" Height="220" Margin="0,7,0,14" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Padding="10"/><CheckBox x:Name="NoteDoneCheck" Content="标记为已完成"/><WrapPanel Margin="0,14,0,0"><Button Content="保存" Click="SaveNote_Click" Style="{StaticResource PrimaryButton}"/><Button Content="显示桌面便签" Click="ShowStickyNote_Click" Style="{StaticResource ActionButton}"/><Button Content="删除" Click="DeleteNote_Click" Style="{StaticResource DangerButton}"/></WrapPanel></StackPanel></Grid></Border>
+     <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#FFF0C9" VerticalAlignment="Center"><TextBlock Text="▤" FontSize="30" Foreground="#D49A21" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="桌面便签 / 待办" Style="{StaticResource PageTitle}"/><TextBlock Text="记录待办，并可显示为始终置顶的桌面便签。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
+     <Border Style="{StaticResource Card}"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><StackPanel Margin="0,0,20,0"><ListBox x:Name="NotesList" Height="370" SelectionChanged="NotesList_SelectionChanged"><ListBox.ItemTemplate><DataTemplate><Grid Margin="7"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="66"/></Grid.ColumnDefinitions><TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="#263750" TextTrimming="CharacterEllipsis"/><TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="#82747C" HorizontalAlignment="Right"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox><Button Content="＋  新建便签" Click="NewNote_Click" Style="{StaticResource ActionButton}" Margin="0,12,0,0" HorizontalAlignment="Stretch"/></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="标题" Style="{StaticResource FieldLabel}"/><TextBox x:Name="NoteTitleBox" Height="40" Margin="0,7,0,14"/><TextBlock Text="内容" Style="{StaticResource FieldLabel}"/><TextBox x:Name="NoteContentBox" Height="220" Margin="0,7,0,14" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Padding="10"/><CheckBox x:Name="NoteDoneCheck" Content="标记为已完成"/><WrapPanel Margin="0,14,0,0"><Button Content="保存" Click="SaveNote_Click" Style="{StaticResource PrimaryButton}"/><Button Content="显示桌面便签" Click="ShowStickyNote_Click" Style="{StaticResource ActionButton}"/><Button Content="删除" Click="DeleteNote_Click" Style="{StaticResource DangerButton}"/></WrapPanel></StackPanel></Grid></Border>
     </StackPanel></ScrollViewer>
 
     <ScrollViewer x:Name="OrganizerPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
@@ -436,7 +444,7 @@
 
     <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
      <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#EDF2F8" VerticalAlignment="Center"><TextBlock Text="⚙" FontSize="31" Foreground="#49617F" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="设置与更新" Style="{StaticResource PageTitle}"/><TextBlock Text="管理托盘行为、版本更新和应用信息。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
-     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.1" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.3" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
     </StackPanel></ScrollViewer>
     </Grid>
    </Grid>

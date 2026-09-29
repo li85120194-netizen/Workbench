@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -9,9 +10,9 @@ using Microsoft.Win32;
 
 [assembly: AssemblyTitle("小二安装程序")]
 [assembly: AssemblyProduct("小二")]
-[assembly: AssemblyVersion("1.3.1.0")]
-[assembly: AssemblyFileVersion("1.3.1.0")]
-[assembly: AssemblyInformationalVersion("1.3.1")]
+[assembly: AssemblyVersion("1.3.3.0")]
+[assembly: AssemblyFileVersion("1.3.3.0")]
+[assembly: AssemblyInformationalVersion("1.3.3")]
 
 internal static class WorkbenchInstaller
 {
@@ -40,10 +41,13 @@ internal static class WorkbenchInstaller
         try
         {
             string installDir = Path.GetFullPath(string.IsNullOrWhiteSpace(installDirectory) ? DefaultInstallDir : installDirectory.Trim());
-            string appPath = Path.Combine(installDir, "Workbench.exe");
+            string appPath = Path.Combine(installDir, "XiaoEr.exe");
             string uninstallPath = Path.Combine(installDir, "Uninstall.exe");
-            foreach (var p in Process.GetProcessesByName("Workbench")) { try { p.CloseMainWindow(); p.WaitForExit(4000); if (!p.HasExited) p.Kill(); } catch { } }
+            foreach (var p in Process.GetProcessesByName("XiaoEr").Concat(Process.GetProcessesByName("Workbench"))) { try { p.CloseMainWindow(); p.WaitForExit(4000); if (!p.HasExited) p.Kill(); } catch { } }
             Directory.CreateDirectory(installDir);
+            try { File.Delete(Path.Combine(installDir, "Workbench.exe")); } catch { }
+            try { File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "工具箱.lnk")); } catch { }
+            try { File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "工具箱.lnk")); } catch { }
             using (var input = Assembly.GetExecutingAssembly().GetManifestResourceStream("WorkbenchPayload"))
             using (var output = new FileStream(appPath, FileMode.Create, FileAccess.Write)) { input.CopyTo(output); }
             File.Copy(Assembly.GetExecutingAssembly().Location, uninstallPath, true);
@@ -52,7 +56,7 @@ internal static class WorkbenchInstaller
             TryDelete(LegacyDesktopShortcut);
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench"))
             {
-                key.SetValue("DisplayName", "小二"); key.SetValue("DisplayVersion", "1.3.1"); key.SetValue("Publisher", "Toolbox");
+                key.SetValue("DisplayName", "小二"); key.SetValue("DisplayVersion", "1.3.3"); key.SetValue("Publisher", "Toolbox");
                 key.SetValue("DisplayIcon", appPath); key.SetValue("UninstallString", "\"" + uninstallPath + "\" /uninstall");
                 key.SetValue("InstallLocation", installDir); key.SetValue("NoModify", 1); key.SetValue("NoRepair", 1);
             }
@@ -66,9 +70,9 @@ internal static class WorkbenchInstaller
     {
         if (MessageBox.Show("确定要卸载小二吗？", "小二", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
         string installDir = GetExistingInstallDir();
-        string appPath = Path.Combine(installDir, "Workbench.exe");
+        string appPath = Path.Combine(installDir, "XiaoEr.exe");
         string uninstallPath = Path.Combine(installDir, "Uninstall.exe");
-        foreach (var p in Process.GetProcessesByName("Workbench")) { try { p.Kill(); } catch { } }
+        foreach (var p in Process.GetProcessesByName("XiaoEr").Concat(Process.GetProcessesByName("Workbench"))) { try { p.Kill(); } catch { } }
         TryDelete(appPath); TryDelete(DesktopShortcut); TryDelete(StartShortcut); TryDelete(LegacyDesktopShortcut);
         try { Registry.CurrentUser.DeleteSubKeyTree(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench", false); } catch { }
         MessageBox.Show("小二已卸载。用户设置与收纳撤回记录已保留。", "小二");

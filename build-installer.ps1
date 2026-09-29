@@ -7,7 +7,7 @@ $version = [string]$projectXml.Project.PropertyGroup.Version
 
 dotnet publish "$projectRoot\Workbench.csproj" -c Release
 if ($LASTEXITCODE -ne 0) { throw 'Application publish failed.' }
-$payload = "$projectRoot\bin\Release\net6.0-windows\win-x64\publish\Workbench.exe"
+$payload = "$projectRoot\bin\Release\net6.0-windows10.0.19041.0\win-x64\publish\XiaoEr.exe"
 
 & $csc /nologo /target:winexe /platform:x64 /optimize+ `
   /win32icon:"$projectRoot\Assets\XiaoEr.ico" `

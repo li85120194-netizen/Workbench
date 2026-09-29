@@ -42,6 +42,7 @@ public partial class LauncherWindow : Window
         AddTool("clipboard", "剪贴板历史", "查找最近复制内容", "▣", "剪贴板 复制 历史 jtb clipboard");
         AddTool("screenshot", "截图与贴图", "区域截图、保存和桌面贴图", "▧", "截图 贴图 capture screenshot");
         AddTool("text", "文本工具", "清理、转换与开发辅助", "文", "文本 清理 json base64 text");
+        AddTool("advanced", "文件与实用工具", "文件搜索、查重、哈希、密码与换算", "⌕", "文件 搜索 重复 哈希 密码 换算 disk hash");
         AddTool("notes", "便签 / 待办", "本地便签和待办事项", "▤", "便签 待办 note todo");
         AddTool("organizer", "桌面收纳", "预览后安全整理桌面", "▦", "桌面 收纳 整理 organizer");
         AddTool("rename", "批量重命名", "预览并批量修改文件名", "✎", "重命名 批量 plcmm rename");

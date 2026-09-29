@@ -75,6 +75,7 @@ public partial class MainWindow : Window
                     case "clipboard": ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史"); break;
             case "screenshot": ShowPage(ScreenshotPage, ScreenshotNav, "截图与贴图"); break;
             case "text": ShowPage(TextPage, TextNav, "文本工具"); break;
+            case "advanced": ShowPage(AdvancedPage, AdvancedNav, "文件与实用工具"); break;
                 }
                 _ = CaptureAndCloseDebugPreviewAsync(capturePath);
             }
@@ -187,8 +188,8 @@ public partial class MainWindow : Window
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav, string title)
     {
         EnsureTab(page, nav, title);
-        foreach (var item in new UIElement[] { HomePage, ScreenshotPage, TextPage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
-        foreach (var item in new[] { HomeNav, ScreenshotNav, TextNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
+        foreach (var item in new UIElement[] { HomePage, ScreenshotPage, TextPage, AdvancedPage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
+        foreach (var item in new[] { HomeNav, ScreenshotNav, TextNav, AdvancedNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
         {
             item.Background = System.Windows.Media.Brushes.Transparent;
             item.BorderBrush = System.Windows.Media.Brushes.Transparent;
@@ -233,7 +234,7 @@ public partial class MainWindow : Window
         if (OpenTabsPanel.Children.Count == 0)
         {
             CurrentPageTitle.Text = string.Empty;
-            foreach (var nav in new[] { HomeNav, ScreenshotNav, TextNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
+            foreach (var nav in new[] { HomeNav, ScreenshotNav, TextNav, AdvancedNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
             return;
         }
         var nextIndex = Math.Min(closedIndex, OpenTabsPanel.Children.Count - 1);
@@ -242,7 +243,7 @@ public partial class MainWindow : Window
         ShowPage(nextPage, GetNavButton(nextPage), GetPageTitle(nextPage));
     }
 
-    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == ScreenshotPage ? ScreenshotNav : page == TextPage ? TextNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
+    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == ScreenshotPage ? ScreenshotNav : page == TextPage ? TextNav : page == AdvancedPage ? AdvancedNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
 
     private string GetPageTitle(UIElement page)
     {
@@ -293,6 +294,7 @@ public partial class MainWindow : Window
             case "clipboard": ShowPage(ClipboardPage, ClipboardNav, "剪贴板历史"); break;
             case "screenshot": ShowPage(ScreenshotPage, ScreenshotNav, "截图与贴图"); break;
             case "text": ShowPage(TextPage, TextNav, "文本工具"); break;
+            case "advanced": ShowPage(AdvancedPage, AdvancedNav, "文件与实用工具"); break;
             case "notes": ShowPage(NotesPage, NotesNav, "便签 / 待办"); break;
             case "organizer": ShowPage(OrganizerPage, OrganizerNav, "桌面收纳"); RefreshOrganizerStatus(); break;
             case "rename": ShowPage(RenamePage, RenameNav, "批量重命名"); break;
