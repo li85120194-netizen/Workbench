@@ -14,9 +14,9 @@ using System.Windows.Forms;
 
 [assembly: AssemblyTitle("小二在线安装程序")]
 [assembly: AssemblyProduct("小二")]
-[assembly: AssemblyVersion("1.3.3.0")]
-[assembly: AssemblyFileVersion("1.3.3.0")]
-[assembly: AssemblyInformationalVersion("1.3.3")]
+[assembly: AssemblyVersion("1.3.4.0")]
+[assembly: AssemblyFileVersion("1.3.4.0")]
+[assembly: AssemblyInformationalVersion("1.3.4")]
 
 internal static class WorkbenchBootstrapper
 {

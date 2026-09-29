@@ -530,8 +530,20 @@ public partial class MainWindow : Window
         ProfileAvatarShape.Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 234, 255));
         if (_activeAccount is null)
         {
-            ProfileAvatarShape.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Assets/XiaoEr.png"))) { Stretch = Stretch.UniformToFill };
-            ProfileInitialText.Visibility = Visibility.Collapsed;
+            try
+            {
+                var avatar = new BitmapImage();
+                avatar.BeginInit();
+                avatar.CacheOption = BitmapCacheOption.OnLoad;
+                avatar.UriSource = new Uri("pack://application:,,,/Assets/XiaoEr.png", UriKind.Absolute);
+                avatar.EndInit();
+                ProfileAvatarShape.Fill = new ImageBrush(avatar) { Stretch = Stretch.UniformToFill };
+                ProfileInitialText.Visibility = Visibility.Collapsed;
+            }
+            catch
+            {
+                // Keep the built-in initial placeholder if a future package is missing the avatar resource.
+            }
             return;
         }
         if (string.IsNullOrWhiteSpace(_activeAccount.AvatarPath) || !File.Exists(_activeAccount.AvatarPath)) return;
