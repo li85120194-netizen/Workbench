@@ -189,8 +189,8 @@ public partial class MainWindow : Window
     private void ShowPage(UIElement page, System.Windows.Controls.Button nav, string title)
     {
         EnsureTab(page, nav, title);
-        foreach (var item in new UIElement[] { HomePage, ScreenshotPage, TextPage, AdvancedPage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
-        foreach (var item in new[] { HomeNav, ScreenshotNav, TextNav, AdvancedNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
+        foreach (var item in new UIElement[] { HomePage, ScreenshotPage, TextPage, AdvancedPage, UninstallPage, MousePage, TimerPage, PomodoroPage, ClipboardPage, NotesPage, OrganizerPage, RenamePage, ImagePage, PdfPage, SettingsPage }) item.Visibility = Visibility.Collapsed;
+        foreach (var item in new[] { HomeNav, ScreenshotNav, TextNav, AdvancedNav, UninstallNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav })
         {
             item.Background = System.Windows.Media.Brushes.Transparent;
             item.BorderBrush = System.Windows.Media.Brushes.Transparent;
@@ -235,7 +235,7 @@ public partial class MainWindow : Window
         if (OpenTabsPanel.Children.Count == 0)
         {
             CurrentPageTitle.Text = string.Empty;
-            foreach (var nav in new[] { HomeNav, ScreenshotNav, TextNav, AdvancedNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
+            foreach (var nav in new[] { HomeNav, ScreenshotNav, TextNav, AdvancedNav, UninstallNav, MouseNav, TimerNav, PomodoroNav, ClipboardNav, NotesNav, OrganizerNav, RenameNav, ImageNav, PdfNav, SettingsNav }) { nav.Background = System.Windows.Media.Brushes.Transparent; nav.BorderBrush = System.Windows.Media.Brushes.Transparent; }
             return;
         }
         var nextIndex = Math.Min(closedIndex, OpenTabsPanel.Children.Count - 1);
@@ -244,7 +244,7 @@ public partial class MainWindow : Window
         ShowPage(nextPage, GetNavButton(nextPage), GetPageTitle(nextPage));
     }
 
-    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == ScreenshotPage ? ScreenshotNav : page == TextPage ? TextNav : page == AdvancedPage ? AdvancedNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
+    private System.Windows.Controls.Button GetNavButton(UIElement page) => page == HomePage ? HomeNav : page == ScreenshotPage ? ScreenshotNav : page == TextPage ? TextNav : page == AdvancedPage ? AdvancedNav : page == UninstallPage ? UninstallNav : page == MousePage ? MouseNav : page == TimerPage ? TimerNav : page == PomodoroPage ? PomodoroNav : page == ClipboardPage ? ClipboardNav : page == NotesPage ? NotesNav : page == OrganizerPage ? OrganizerNav : page == RenamePage ? RenameNav : page == ImagePage ? ImageNav : page == PdfPage ? PdfNav : SettingsNav;
 
     private string GetPageTitle(UIElement page)
     {
@@ -272,6 +272,7 @@ public partial class MainWindow : Window
     private void RenameNav_Click(object sender, RoutedEventArgs e) => ShowPage(RenamePage, RenameNav, "批量重命名");
     private void ImageNav_Click(object sender, RoutedEventArgs e) => ShowPage(ImagePage, ImageNav, "图片处理");
     private void PdfNav_Click(object sender, RoutedEventArgs e) => ShowPage(PdfPage, PdfNav, "PDF 工具");
+    private void UninstallNav_Click(object sender, RoutedEventArgs e) { ShowPage(UninstallPage, UninstallNav, "软件卸载"); UpdateGeekStatus(); }
     private void SettingsNav_Click(object sender, RoutedEventArgs e) => ShowPage(SettingsPage, SettingsNav, "设置与更新");
     private void OperationsNav_Click(object sender, RoutedEventArgs e) => new IndustryWindow { Owner = this }.ShowDialog();
     private void OperationsAdminNav_Click(object sender, RoutedEventArgs e) => new OperationsWindow { Owner = this }.ShowDialog();

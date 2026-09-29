@@ -203,8 +203,9 @@
        <Button x:Name="OperationsNav" Style="{StaticResource NavButton}" Click="OperationsNav_Click"><TextBlock Text="行业视野"/></Button>
        <Button x:Name="OperationsAdminNav" Style="{StaticResource NavButton}" Click="OperationsAdminNav_Click"><TextBlock Text="内容配置"/></Button>
       </StackPanel></Expander>
+      <Button x:Name="UninstallNav" Style="{StaticResource NavButton}" Click="UninstallNav_Click"><TextBlock Text="软件卸载"/></Button>
       <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="SettingsNav_Click"><TextBlock Text="设置与更新"/></Button>
-     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.10" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
+     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.11" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
     </Grid>
    </Border>
    <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragCompleted="SidebarSplitter_DragCompleted" ToolTip="拖动调整菜单宽度"/>
@@ -326,7 +327,34 @@
       <TabItem Header="密码 / 换算"><Border Style="{StaticResource Card}" Margin="0,10,0,0"><StackPanel><TextBlock Text="安全密码生成器" Style="{StaticResource CardTitle}"/><WrapPanel Margin="0,12,0,22"><TextBox x:Name="PasswordResult" Width="360" IsReadOnly="True" FontFamily="Consolas"/><Button Content="生成" Click="GeneratePassword_Click" Style="{StaticResource PrimaryButton}"/><Button Content="复制" Click="CopyPassword_Click" Style="{StaticResource ActionButton}"/></WrapPanel><TextBlock Text="常用换算" Style="{StaticResource CardTitle}"/><WrapPanel Margin="0,12"><TextBox x:Name="UnitInput" Width="160"/><ComboBox x:Name="UnitType" Width="220" SelectedIndex="0" Margin="8,0"><ComboBoxItem Content="千米 → 米"/><ComboBoxItem Content="米 → 千米"/><ComboBoxItem Content="千克 → 磅"/><ComboBoxItem Content="华氏度 → 摄氏度"/></ComboBox><Button Content="换算" Click="ConvertUnit_Click" Style="{StaticResource PrimaryButton}"/><TextBlock x:Name="UnitResult" Margin="15,0" VerticalAlignment="Center" FontSize="17" FontWeight="SemiBold"/></WrapPanel></StackPanel></Border></TabItem>
       <TabItem Header="Markdown"><Border Style="{StaticResource Card}" Margin="0,10,0,0"><StackPanel><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions><TextBox x:Name="MarkdownInput" Height="400" AcceptsReturn="True" VerticalContentAlignment="Top" TextWrapping="Wrap"/><TextBox x:Name="MarkdownOutput" Grid.Column="2" Height="400" IsReadOnly="True" AcceptsReturn="True" VerticalContentAlignment="Top" TextWrapping="Wrap"/></Grid><Button Content="生成本地预览" Click="MarkdownPreview_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" Margin="0,12,0,0"/></StackPanel></Border></TabItem>
      </TabControl>
-    </StackPanel></ScrollViewer>    <ScrollViewer x:Name="MousePage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    </StackPanel></ScrollViewer>
+    <ScrollViewer x:Name="UninstallPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+     <StackPanel>
+      <Grid Height="112" Margin="0,0,0,12">
+       <Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+       <Border Width="70" Height="70" CornerRadius="35" Background="#EAF2FF" VerticalAlignment="Center"><TextBlock Text="卸" FontSize="28" FontWeight="Bold" Foreground="#2875E8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="软件卸载" Style="{StaticResource PageTitle}"/><TextBlock Text="通过 Geek Uninstaller 管理桌面程序和 Microsoft Store 应用。" Style="{StaticResource PageSubtitle}"/></StackPanel>
+      </Grid>
+      <Border Style="{StaticResource Card}">
+       <StackPanel>
+        <TextBlock Text="Geek Uninstaller" Style="{StaticResource CardTitle}"/>
+        <TextBlock Text="首次使用时从 Geek Uninstaller 官方网站下载便携版，之后保存在小二本地工具目录中，可直接一键启动。" Style="{StaticResource MutedText}" Margin="0,8,0,14" TextWrapping="Wrap"/>
+        <Border Background="#F2F7FD" BorderBrush="#D9E6F5" BorderThickness="1" CornerRadius="9" Padding="14" Margin="0,0,0,14">
+         <TextBlock Text="第三方工具说明：Geek Uninstaller 免费版仅供个人使用；小二不修改、不重新分发其程序，下载文件直接来自官方 HTTPS 地址。卸载操作会由 Geek Uninstaller 单独请求确认。" Foreground="#49617F" TextWrapping="Wrap"/>
+        </Border>
+        <WrapPanel>
+         <Button x:Name="GeekLaunchButton" Content="下载并启动" Click="DownloadAndLaunchGeek_Click" Style="{StaticResource PrimaryButton}"/>
+         <Button Content="检查并重新下载" Click="RefreshGeek_Click" Style="{StaticResource ActionButton}"/>
+         <Button Content="打开本地目录" Click="OpenGeekFolder_Click" Style="{StaticResource ActionButton}"/>
+         <Button Content="访问官方网站" Click="OpenGeekWebsite_Click" Style="{StaticResource ActionButton}"/>
+        </WrapPanel>
+        <ProgressBar x:Name="GeekDownloadProgress" Height="8" Margin="4,16,4,0" Minimum="0" Maximum="100" Visibility="Collapsed"/>
+        <TextBlock x:Name="GeekDownloadStatus" Text="正在检查本地工具…" Style="{StaticResource MutedText}" Margin="4,12,0,0" TextWrapping="Wrap"/>
+       </StackPanel>
+      </Border>
+     </StackPanel>
+    </ScrollViewer>
+    <ScrollViewer x:Name="MousePage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
      <StackPanel>
       <Grid Height="134" Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="104"/><ColumnDefinition Width="*"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
        <Grid Width="82" Height="82" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -473,7 +501,7 @@
 
     <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
      <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#EDF2F8" VerticalAlignment="Center"><TextBlock Text="⚙" FontSize="31" Foreground="#49617F" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="设置与更新" Style="{StaticResource PageTitle}"/><TextBlock Text="管理托盘行为、版本更新和应用信息。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
-     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.10" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.11" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
     </StackPanel></ScrollViewer>
     </Grid>
    </Grid>
