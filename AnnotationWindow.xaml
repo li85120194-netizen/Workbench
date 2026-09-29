@@ -2,13 +2,34 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None" AllowsTransparency="True" Background="#01000000"
-        ShowInTaskbar="False" ShowActivated="False" Topmost="True"
+        ShowInTaskbar="False" ShowActivated="True" Topmost="True" PreviewKeyDown="OnPreviewKeyDown"
         MouseLeftButtonDown="OnMouseDown" MouseMove="OnMouseMove" MouseLeftButtonUp="OnMouseUp">
     <Grid>
         <Canvas x:Name="DrawingCanvas" Background="Transparent"/>
         <Border HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,14,0,0"
-                Background="#CC202124" CornerRadius="8" Padding="14,8">
-            <TextBlock Text="标注模式：按住鼠标左键绘制 · F2 退出" Foreground="White" FontSize="13"/>
+                Background="#E61B2638" BorderBrush="#667E96B3" BorderThickness="1"
+                CornerRadius="12" Padding="8,6">
+            <Border.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Height" Value="34"/>
+                    <Setter Property="MinWidth" Value="70"/>
+                    <Setter Property="Margin" Value="3,0"/>
+                    <Setter Property="Padding" Value="12,0"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="#29415F"/>
+                    <Setter Property="BorderBrush" Value="#536D8C"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Style>
+            </Border.Resources>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="屏幕标注" Foreground="White" FontWeight="SemiBold"
+                           VerticalAlignment="Center" Margin="8,0,12,0"/>
+                <Button Content="↶ 撤销" Click="Undo_Click" ToolTip="Ctrl+Z"/>
+                <Button Content="清空" Click="Clear_Click" ToolTip="Delete"/>
+                <Button Content="完成" Click="Close_Click" Background="#2875E8"
+                        BorderBrush="#4D94F5" ToolTip="Esc 或 F2"/>
+            </StackPanel>
         </Border>
     </Grid>
 </Window>
