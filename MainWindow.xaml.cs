@@ -89,6 +89,7 @@ public partial class MainWindow : Window
     {
         UpdateHomeClock();
         UpdateHomeMetrics();
+        RefreshSystemInfo();
         _homeClockTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _homeClockTimer.Tick += (_, _) => { UpdateHomeClock(); UpdateHomeMetrics(); };
         _homeClockTimer.Start();
