@@ -10,9 +10,9 @@ using Microsoft.Win32;
 
 [assembly: AssemblyTitle("小二安装程序")]
 [assembly: AssemblyProduct("小二")]
-[assembly: AssemblyVersion("1.3.6.0")]
-[assembly: AssemblyFileVersion("1.3.6.0")]
-[assembly: AssemblyInformationalVersion("1.3.6")]
+[assembly: AssemblyVersion("1.3.7.0")]
+[assembly: AssemblyFileVersion("1.3.7.0")]
+[assembly: AssemblyInformationalVersion("1.3.7")]
 
 internal static class WorkbenchInstaller
 {
@@ -56,7 +56,7 @@ internal static class WorkbenchInstaller
             TryDelete(LegacyDesktopShortcut);
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\Workbench"))
             {
-                key.SetValue("DisplayName", "小二"); key.SetValue("DisplayVersion", "1.3.6"); key.SetValue("Publisher", "Toolbox");
+                key.SetValue("DisplayName", "小二"); key.SetValue("DisplayVersion", "1.3.7"); key.SetValue("Publisher", "Toolbox");
                 key.SetValue("DisplayIcon", appPath); key.SetValue("UninstallString", "\"" + uninstallPath + "\" /uninstall");
                 key.SetValue("InstallLocation", installDir); key.SetValue("NoModify", 1); key.SetValue("NoRepair", 1);
             }
