@@ -44,15 +44,15 @@
   <Style x:Key="ActionButton" TargetType="Button">
    <Setter Property="Height" Value="36"/><Setter Property="MinWidth" Value="96"/><Setter Property="Margin" Value="4"/>
    <Setter Property="Padding" Value="13,0"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/>
-   <Setter Property="Foreground" Value="#324765"/><Setter Property="Background" Value="#FFFCF8"/>
-   <Setter Property="BorderBrush" Value="#E4D5C8"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Cursor" Value="Hand"/>
+   <Setter Property="Foreground" Value="#29415F"/><Setter Property="Background" Value="#FFFFFF"/>
+   <Setter Property="BorderBrush" Value="#D5E1F0"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Cursor" Value="Hand"/>
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
     <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="9" Padding="{TemplateBinding Padding}">
      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Border>
     <ControlTemplate.Triggers>
-     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#E1A565"/><Setter TargetName="ButtonBorder" Property="Background" Value="#FFF3E8"/></Trigger>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#8CB5F5"/><Setter TargetName="ButtonBorder" Property="Background" Value="#F3F7FF"/></Trigger>
      <Trigger Property="IsPressed" Value="True"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.78"/></Trigger>
      <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45"/></Trigger>
     </ControlTemplate.Triggers>
@@ -79,13 +79,13 @@
   </Style>
 
   <Style x:Key="Card" TargetType="Border">
-   <Setter Property="Padding" Value="18"/><Setter Property="CornerRadius" Value="13"/><Setter Property="Background" Value="#FCFEFF"/>
-   <Setter Property="BorderBrush" Value="#E6EDF7"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="Padding" Value="18"/><Setter Property="CornerRadius" Value="14"/><Setter Property="Background" Value="#FFFFFF"/>
+   <Setter Property="BorderBrush" Value="#DCE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Effect"><Setter.Value><DropShadowEffect Color="#7890A8" BlurRadius="8" ShadowDepth="1" Opacity="0.10"/></Setter.Value></Setter>
   </Style>
-  <Style x:Key="PageTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="#2B2330"/></Style>
-  <Style x:Key="PageSubtitle" TargetType="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#766A72"/><Setter Property="Margin" Value="0,5,0,0"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
-  <Style x:Key="CardTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#2D2430"/></Style>
-  <Style x:Key="MutedText" TargetType="TextBlock"><Setter Property="Foreground" Value="#82747C"/></Style>
+  <Style x:Key="PageTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="#142A46"/></Style>
+  <Style x:Key="PageSubtitle" TargetType="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#6F8199"/><Setter Property="Margin" Value="0,5,0,0"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+  <Style x:Key="CardTitle" TargetType="TextBlock"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#1A304C"/></Style>
+  <Style x:Key="MutedText" TargetType="TextBlock"><Setter Property="Foreground" Value="#71839A"/></Style>
   <Style x:Key="FieldLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="#40516D"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
   <Style TargetType="TextBox">
    <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="11,0"/><Setter Property="FontSize" Value="14"/>
@@ -132,6 +132,7 @@
     </Grid>
    </ControlTemplate></Setter.Value></Setter>
   </Style>
+  <Style TargetType="ScrollViewer"><Setter Property="FocusVisualStyle" Value="{x:Null}"/></Style>
   <Style TargetType="ListBox"><Setter Property="Background" Value="#FFFCF8"/><Setter Property="BorderBrush" Value="#DDE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="4"/></Style>
   <Style TargetType="DataGrid"><Setter Property="Background" Value="#FFFCF8"/><Setter Property="BorderBrush" Value="#DDE6F2"/><Setter Property="BorderThickness" Value="1"/><Setter Property="GridLinesVisibility" Value="Horizontal"/><Setter Property="HorizontalGridLinesBrush" Value="#EDF2F8"/><Setter Property="RowBackground" Value="White"/><Setter Property="AlternatingRowBackground" Value="#F8FAFD"/></Style>
   <Style TargetType="ProgressBar"><Setter Property="Foreground" Value="#2B7EF3"/><Setter Property="Background" Value="#DFE8F4"/></Style>
@@ -173,16 +174,16 @@
     <Grid Margin="0,14,0,14"><Grid.RowDefinitions><RowDefinition Height="54"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
      <Button x:Name="ProfileButton" Grid.Row="2" Click="ProfileButton_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" HorizontalContentAlignment="Stretch" Padding="14,5">
       <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-       <Grid Width="42" Height="42"><Ellipse x:Name="ProfileAvatarShape" Fill="#DCEAFF"/><TextBlock x:Name="ProfileInitialText" Text="登" Foreground="#2D73DC" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Grid>
+       <Grid Width="42" Height="42"><Ellipse x:Name="ProfileAvatarShape" Fill="#DCEAFF" Stroke="#5D789B" StrokeThickness="1.5"/><TextBlock x:Name="ProfileInitialText" Text="登" Foreground="#2D73DC" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Grid>
        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0"><TextBlock x:Name="ProfileNameText" Text="登录 / 注册" Foreground="White" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="ProfileHintText" Text="本机账户 · 可选" Foreground="#8FA9CA" FontSize="10" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/></StackPanel>
       </Grid>
      </Button>
      <Grid Grid.Row="0" Margin="16,0"><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-      <Border Width="42" Height="42" CornerRadius="10" ClipToBounds="True"><Image Source="pack://application:,,,/XiaoEr;component/Assets/XiaoEr.png" Stretch="UniformToFill"/></Border>
+      <Ellipse Width="42" Height="42" Stroke="#6D87A8" StrokeThickness="1.5"><Ellipse.Fill><ImageBrush ImageSource="pack://application:,,,/XiaoEr;component/Assets/XiaoEr.png" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="小二" Foreground="White" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="轻量效率中心" Foreground="#91A8C6" FontSize="10"/></StackPanel>
      </Grid>
           <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><ScrollViewer.Resources><Style TargetType="ScrollBar" BasedOn="{StaticResource SidebarScrollBar}"/></ScrollViewer.Resources><StackPanel>
-      <TextBox x:Name="NavSearchBox" Margin="12,0,12,8" Height="34" TextChanged="NavSearch_Changed" ToolTip="搜索功能" />
+
       <Button x:Name="HomeNav" Style="{StaticResource NavButton}" Click="HomeNav_Click" BorderBrush="#58D8FF"><Button.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#2875E8"/><GradientStop Color="#244F9B" Offset="1"/></LinearGradientBrush></Button.Background><TextBlock Text="首页" VerticalAlignment="Center"/></Button>
       <Expander x:Name="PresentationExpander" Header="小工具" Style="{StaticResource SidebarExpander}" IsExpanded="True"><StackPanel>
        <Button x:Name="MouseNav" Style="{StaticResource NavButton}" Click="MouseNav_Click"><TextBlock Text="鼠标高亮"/></Button>
@@ -203,7 +204,7 @@
        <Button x:Name="OperationsAdminNav" Style="{StaticResource NavButton}" Click="OperationsAdminNav_Click"><TextBlock Text="内容配置"/></Button>
       </StackPanel></Expander>
       <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="SettingsNav_Click"><TextBlock Text="设置与更新"/></Button>
-     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.5" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
+     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.6" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
     </Grid>
    </Border>
    <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragCompleted="SidebarSplitter_DragCompleted" ToolTip="拖动调整菜单宽度"/>
@@ -219,7 +220,7 @@
 
    <Grid Grid.Column="2" Grid.Row="1" Margin="20,2,20,18">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-    <Border Background="#F3EDE7" BorderBrush="#DED2C8" BorderThickness="1" CornerRadius="9" Padding="5" Margin="0,0,0,10">
+    <Border Background="#E8F0FA" BorderBrush="#D1DEED" BorderThickness="1" CornerRadius="11" Padding="5" Margin="0,0,0,10">
      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"><WrapPanel x:Name="OpenTabsPanel"/></ScrollViewer>
     </Border>
     <Grid Grid.Row="1">
@@ -444,7 +445,7 @@
 
     <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
      <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#EDF2F8" VerticalAlignment="Center"><TextBlock Text="⚙" FontSize="31" Foreground="#49617F" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="设置与更新" Style="{StaticResource PageTitle}"/><TextBlock Text="管理托盘行为、版本更新和应用信息。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
-     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.5" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.6" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
     </StackPanel></ScrollViewer>
     </Grid>
    </Grid>

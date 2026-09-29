@@ -31,5 +31,5 @@ public partial class MainWindow
     private void TextUndo_Click(object sender,RoutedEventArgs e){TextInputBox.Text=_textUndo;}
     private void TextImport_Click(object sender,RoutedEventArgs e){var d=new Microsoft.Win32.OpenFileDialog{Filter="文本文件|*.txt;*.md;*.json;*.xml;*.csv|所有文件|*.*"};if(d.ShowDialog(this)==true)TextInputBox.Text=System.IO.File.ReadAllText(d.FileName);}
     private void TextExport_Click(object sender,RoutedEventArgs e){var d=new Microsoft.Win32.SaveFileDialog{Filter="文本文件|*.txt",FileName="小二文本结果.txt"};if(d.ShowDialog(this)==true)System.IO.File.WriteAllText(d.FileName,TextOutputBox.Text);}
-    private void NavSearch_Changed(object sender,TextChangedEventArgs e){var q=NavSearchBox.Text.Trim();foreach(var b in new[]{MouseNav,TimerNav,PomodoroNav,ClipboardNav,NotesNav,ScreenshotNav,TextNav,AdvancedNav,OrganizerNav,RenameNav,ImageNav,PdfNav}){var label=(b.Content as TextBlock)?.Text??"";b.Visibility=string.IsNullOrEmpty(q)||label.Contains(q,StringComparison.OrdinalIgnoreCase)?Visibility.Visible:Visibility.Collapsed;}PresentationExpander.IsExpanded=true;}
+
 }
