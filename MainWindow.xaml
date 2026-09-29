@@ -4,7 +4,7 @@
  xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
  Title="小二" Width="1180" Height="760" MinWidth="960" MinHeight="640"
  WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize" AllowsTransparency="False"
- Background="#FFF8F0" FontFamily="Microsoft YaHei UI" UseLayoutRounding="True"
+ Background="#F3F7FD" FontFamily="Microsoft YaHei UI" UseLayoutRounding="True"
  Closing="Window_Closing" SourceInitialized="Window_SourceInitialized" StateChanged="Window_StateChanged">
  <shell:WindowChrome.WindowChrome>
   <shell:WindowChrome CaptionHeight="42" ResizeBorderThickness="7" CornerRadius="16"
@@ -12,10 +12,10 @@
  </shell:WindowChrome.WindowChrome>
  <Window.Resources>
   <LinearGradientBrush x:Key="SidebarBrush" StartPoint="0,0" EndPoint="1,1">
-   <GradientStop Color="#171723" Offset="0"/><GradientStop Color="#24233A" Offset="0.58"/><GradientStop Color="#10111B" Offset="1"/>
+   <GradientStop Color="#10243F" Offset="0"/><GradientStop Color="#153152" Offset="0.58"/><GradientStop Color="#0F2441" Offset="1"/>
   </LinearGradientBrush>
   <LinearGradientBrush x:Key="ActiveNavBrush" StartPoint="0,0" EndPoint="1,0">
-   <GradientStop Color="#3657B7" Offset="0"/><GradientStop Color="#273B83" Offset="1"/>
+   <GradientStop Color="#2875E8" Offset="0"/><GradientStop Color="#244F9B" Offset="1"/>
   </LinearGradientBrush>
   <LinearGradientBrush x:Key="PrimaryBrush" StartPoint="0,0" EndPoint="0,1">
    <GradientStop Color="#5576DE" Offset="0"/><GradientStop Color="#3554B2" Offset="1"/>
@@ -164,7 +164,7 @@
   </Style>
  </Window.Resources>
 
- <Border x:Name="WindowBorder" CornerRadius="16" BorderBrush="#D9C9BD" BorderThickness="1" Background="#FFF8F0" ClipToBounds="True">
+ <Border x:Name="WindowBorder" CornerRadius="16" BorderBrush="#C9D5E5" BorderThickness="1" Background="#F3F7FD" ClipToBounds="True">
   <Grid>
    <Grid.ColumnDefinitions><ColumnDefinition x:Name="SidebarColumn" Width="196" MinWidth="168" MaxWidth="270"/><ColumnDefinition Width="5"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
    <Grid.RowDefinitions><RowDefinition Height="42"/><RowDefinition Height="*"/></Grid.RowDefinitions>
@@ -178,12 +178,12 @@
       </Grid>
      </Button>
      <Grid Grid.Row="0" Margin="16,0"><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-      <Border Width="42" Height="42" CornerRadius="10" ClipToBounds="True"><Image Source="Assets/XiaoEr.png" Stretch="UniformToFill"/></Border>
+      <Border Width="42" Height="42" CornerRadius="10" ClipToBounds="True"><Image Source="pack://application:,,,/XiaoEr;component/Assets/XiaoEr.png" Stretch="UniformToFill"/></Border>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="小二" Foreground="White" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="轻量效率中心" Foreground="#91A8C6" FontSize="10"/></StackPanel>
      </Grid>
           <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><ScrollViewer.Resources><Style TargetType="ScrollBar" BasedOn="{StaticResource SidebarScrollBar}"/></ScrollViewer.Resources><StackPanel>
       <TextBox x:Name="NavSearchBox" Margin="12,0,12,8" Height="34" TextChanged="NavSearch_Changed" ToolTip="搜索功能" />
-      <Button x:Name="HomeNav" Style="{StaticResource NavButton}" Click="HomeNav_Click" BorderBrush="#FFC83D"><Button.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#3657B7"/><GradientStop Color="#273B83" Offset="1"/></LinearGradientBrush></Button.Background><TextBlock Text="首页" VerticalAlignment="Center"/></Button>
+      <Button x:Name="HomeNav" Style="{StaticResource NavButton}" Click="HomeNav_Click" BorderBrush="#58D8FF"><Button.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#2875E8"/><GradientStop Color="#244F9B" Offset="1"/></LinearGradientBrush></Button.Background><TextBlock Text="首页" VerticalAlignment="Center"/></Button>
       <Expander x:Name="PresentationExpander" Header="小工具" Style="{StaticResource SidebarExpander}" IsExpanded="True"><StackPanel>
        <Button x:Name="MouseNav" Style="{StaticResource NavButton}" Click="MouseNav_Click"><TextBlock Text="鼠标高亮"/></Button>
        <Button x:Name="TimerNav" Style="{StaticResource NavButton}" Click="TimerNav_Click"><TextBlock Text="倒计时"/></Button>
@@ -203,12 +203,12 @@
        <Button x:Name="OperationsAdminNav" Style="{StaticResource NavButton}" Click="OperationsAdminNav_Click"><TextBlock Text="内容配置"/></Button>
       </StackPanel></Expander>
       <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="SettingsNav_Click"><TextBlock Text="设置与更新"/></Button>
-     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.3" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
+     </StackPanel></ScrollViewer>     <StackPanel Grid.Row="3" Margin="18,8,0,0"><TextBlock Text="v1.3.4" Foreground="#8FA6C5" FontSize="11"/></StackPanel>
     </Grid>
    </Border>
    <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragCompleted="SidebarSplitter_DragCompleted" ToolTip="拖动调整菜单宽度"/>
 
-   <Grid Grid.Column="2" Background="#FFF9F3">
+   <Grid Grid.Column="2" Background="#F5F8FD">
     <TextBlock x:Name="CurrentPageTitle" Text="首页" Foreground="#8B9AB0" VerticalAlignment="Center" Margin="20,0,0,0" FontSize="11"/>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
      <Button Content="—" Style="{StaticResource TitleButton}" Click="MinimizeWindow_Click"/>
@@ -444,7 +444,7 @@
 
     <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel>
      <Grid Height="112" Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="70" Height="70" CornerRadius="35" Background="#EDF2F8" VerticalAlignment="Center"><TextBlock Text="⚙" FontSize="31" Foreground="#49617F" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="设置与更新" Style="{StaticResource PageTitle}"/><TextBlock Text="管理托盘行为、版本更新和应用信息。" Style="{StaticResource PageSubtitle}"/></StackPanel></Grid>
-     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.3" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel><TextBlock Text="小二 v1.3.4" Style="{StaticResource CardTitle}"/><TextBlock Text="保持应用安静运行，并自动获取后续版本。" Style="{StaticResource MutedText}" Margin="0,7,0,18"/><CheckBox x:Name="MinimizeToTrayCheck" Content="最小化窗口时隐藏到系统托盘" IsChecked="True" Margin="0,0,0,10" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><CheckBox x:Name="AutoUpdateCheck" Content="启动时自动检查更新" IsChecked="True" Margin="0,0,0,16" Checked="GeneralSetting_Changed" Unchecked="GeneralSetting_Changed"/><Button x:Name="CheckUpdateButton" Content="立即检查更新" Click="CheckUpdateButton_Click" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/><TextBlock Text="更新由 GitHub Releases 提供。下载时会显示进度、速度和剩余时间，完成后自动安装并重新打开小二。" Style="{StaticResource MutedText}" Margin="0,15,0,0" TextWrapping="Wrap"/></StackPanel></Border><Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="隐私与数据" Style="{StaticResource CardTitle}"/><TextBlock Text="剪贴板、便签、本机账户、头像和个人设置只保存在 %LOCALAPPDATA%\Toolbox，不会上传网络。PDF 与图片处理也完全在本地完成。" Style="{StaticResource MutedText}" Margin="0,9,0,0" TextWrapping="Wrap"/></StackPanel></Border>
     </StackPanel></ScrollViewer>
     </Grid>
    </Grid>

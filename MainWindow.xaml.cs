@@ -535,7 +535,7 @@ public partial class MainWindow : Window
                 var avatar = new BitmapImage();
                 avatar.BeginInit();
                 avatar.CacheOption = BitmapCacheOption.OnLoad;
-                avatar.UriSource = new Uri("pack://application:,,,/Assets/XiaoEr.png", UriKind.Absolute);
+                avatar.UriSource = new Uri("pack://application:,,,/XiaoEr;component/Assets/XiaoEr.png", UriKind.Absolute);
                 avatar.EndInit();
                 ProfileAvatarShape.Fill = new ImageBrush(avatar) { Stretch = Stretch.UniformToFill };
                 ProfileInitialText.Visibility = Visibility.Collapsed;
